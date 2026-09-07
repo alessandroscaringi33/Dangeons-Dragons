@@ -19,7 +19,8 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 5 — Personaggi | **Completata** |
 | Phase 6 — NPC e luoghi | **Completata** |
 | Phase 7 — Quest e Mondo | **Completata** |
-| Phase 8+ | Non avviate |
+| Phase 8 — Dice Engine | **Completata** |
+| Phase 9+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
 base MVVM. Il **Domain Model** (`DndCompanion.Core/Domain`) contiene tutte le
@@ -68,6 +69,14 @@ Core/Infrastructure, migrazione EF `AddQuestLinks`); le quest attive sono
 evidenziate visivamente. Ogni elemento (luogo e quest) dispone di lista,
 dettaglio, modifica, ricerca, stato e note. Eliminare un capitolo, una scena,
 un luogo o un NPC scollega automaticamente le quest collegate (FK `SetNull`).
+Il **Dice Engine** (Phase 8) è un motore **completamente indipendente dalla UI**
+in `DndCompanion.Core/Dice`: `DiceParser` analizza notazioni come `1d20`,
+`1d20+5`, `2d6+3`, `4d8` per i dadi `d4/d6/d8/d10/d12/d20/d100`;
+`DiceRollCalculator` esegue tiri **normal**, **advantage**, **disadvantage** e
+**tiro fisico** — in quest'ultimo caso il valore inserito dal DM (es. 17) è
+usato come risultato reale e non viene mai generato un valore casuale.
+`DiceService` è la facciata registrata in DI. Il totale è sempre derivato dai
+risultati più il modificatore.
 
 ---
 
@@ -105,6 +114,7 @@ src/
     Npcs/                  # contratti servizio NPC (Phase 6)
     Locations/             # contratti servizio luoghi (Phase 6)
     Quests/                # contratti servizio quest (Phase 7)
+    Dice/                  # Dice Engine: parser, calcolatore e servizio (Phase 8)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -133,6 +143,7 @@ src/
     NpcServiceTests.cs
     LocationServiceTests.cs
     QuestServiceTests.cs
+    DiceEngineTests.cs
 ```
 
 ### Responsabilità dei layer
