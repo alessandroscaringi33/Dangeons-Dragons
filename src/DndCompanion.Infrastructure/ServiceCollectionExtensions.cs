@@ -1,7 +1,9 @@
 using DndCompanion.Core.Campaigns;
+using DndCompanion.Core.Characters;
 using DndCompanion.Core.Documents;
 using DndCompanion.Core.Story;
 using DndCompanion.Infrastructure.Campaigns;
+using DndCompanion.Infrastructure.Characters;
 using DndCompanion.Infrastructure.Data;
 using DndCompanion.Infrastructure.Documents;
 using DndCompanion.Infrastructure.Story;
@@ -24,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPdfReader, PdfPigPdfReader>();
         services.AddSingleton<IChapterService, ChapterService>();
         services.AddSingleton<ISceneService, SceneService>();
+        services.AddSingleton<ICharacterService, CharacterService>();
         return services;
     }
 }

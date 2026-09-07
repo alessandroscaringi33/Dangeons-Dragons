@@ -10,6 +10,8 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Storia"
                      Clicked="OnStoryClicked" />
+        <ToolbarItem Text="Personaggi"
+                     Clicked="OnCharactersClicked" />
     </ContentPage.ToolbarItems>
 
     <ScrollView>

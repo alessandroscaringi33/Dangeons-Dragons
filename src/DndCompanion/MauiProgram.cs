@@ -31,6 +31,10 @@ public static class MauiProgram
         builder.Services.AddTransient<DocumentPage>();
         builder.Services.AddTransient<StoryViewModel>();
         builder.Services.AddTransient<StoryPage>();
+        builder.Services.AddTransient<CharactersViewModel>();
+        builder.Services.AddTransient<CharactersPage>();
+        builder.Services.AddTransient<CharacterDetailViewModel>();
+        builder.Services.AddTransient<CharacterDetailPage>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<MainPage>();
 

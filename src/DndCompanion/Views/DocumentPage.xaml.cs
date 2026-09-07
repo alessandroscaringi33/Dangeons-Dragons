@@ -48,4 +48,15 @@ public partial class DocumentPage : ContentPage
                 ["CampaignName"] = _viewModel.CampaignName
             });
     }
+
+    private async void OnCharactersClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(CharactersPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
 }

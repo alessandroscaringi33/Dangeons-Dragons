@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             xmlns:characters="clr-namespace:DndCompanion.Core.Characters;assembly=DndCompanion.Core"
+             x:Class="DndCompanion.Views.CharacterDetailPage"
+             x:DataType="vm:CharacterDetailViewModel"
+             BackgroundColor="#121212"
+             Title="Scheda Personaggio">
+
+    <Grid RowDefinitions="Auto,*"
+          RowSpacing="8">
+
+        <!-- Header -->
+        <Grid Grid.Row="0"
+              Padding="16,12,16,0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="{Binding Name}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#E8E8E8"
+                       LineBreakMode="TailTruncation"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="{Binding CampaignName}"
+                       FontSize="12"
+                       TextColor="#7A7A7A"
+                       LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="Salva"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    Padding="16,8"
+                    BackgroundColor="#B08D57"
+                    TextColor="#1A1A1A"
+                    CornerRadius="10"
+                    Clicked="OnSaveClicked"
+                    VerticalOptions="Center" />
+        </Grid>
+
+        <!-- Status message -->
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="13"
+               TextColor="#9E9E9E"
+               Padding="16,0,16,4"
+               LineBreakMode="WordWrap" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Identity -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Identità"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Nome" FontSize="11" TextColor="#7A7A7A" />
+                                <Entry Text="{Binding Name}" Placeholder="Nome" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="Giocatore" FontSize="11" TextColor="#7A7A7A" />
+                                <Entry Text="{Binding PlayerName}" Placeholder="Giocatore" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Spacing="4">
+                                <Label Text="Razza" FontSize="11" TextColor="#7A7A7A" />
+                                <Entry Text="{Binding Race}" Placeholder="Razza" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                                <Label Text="Background" FontSize="11" TextColor="#7A7A7A" />
+                                <Entry Text="{Binding Background}" Placeholder="Background" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="2" Spacing="4">
+                                <Label Text="Classe" FontSize="11" TextColor="#7A7A7A" />
+                                <Entry Text="{Binding CharacterClass}" Placeholder="Classe" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="4">
+                                <Label Text="Sottoclasse" FontSize="11" TextColor="#7A7A7A" />
+                                <Entry Text="{Binding Subclass}" Placeholder="Sottoclasse" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Level / Experience / derived -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Livello e derivati"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Livello" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding LevelText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="Exp" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding ExperienceText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="4">
+                                <Label Text="CA" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding ArmorClassText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="3" Spacing="4">
+                                <Label Text="Iniziat." FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding InitiativeText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="4" Spacing="4">
+                                <Label Text="Velocità" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding SpeedText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <FlexLayout Wrap="Wrap" JustifyContent="SpaceBetween" AlignItems="Center">
+                            <Border BackgroundColor="#161616" Stroke="#2E2E2E" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="12,8" Margin="0,0,8,8">
+                                <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                    <Label Text="Proficiency" FontSize="10" TextColor="#7A7A7A" />
+                                    <Label Text="+{Binding ProficiencyBonus}" FontSize="20" FontAttributes="Bold" TextColor="#E8E8E8" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border BackgroundColor="#161616" Stroke="#2E2E2E" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="12,8" Margin="0,0,8,8">
+                                <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                    <Label Text="Iniziativa totale" FontSize="10" TextColor="#7A7A7A" />
+                                    <Label Text="{Binding InitiativeTotal, StringFormat='{0}'}" FontSize="20" FontAttributes="Bold" TextColor="#E8E8E8" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border BackgroundColor="#161616" Stroke="#2E2E2E" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="12,8" Margin="0,0,8,8">
+                                <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                    <Label Text="Percezione passiva" FontSize="10" TextColor="#7A7A7A" />
+                                    <Label Text="{Binding PassivePerception, StringFormat='{0}'}" FontSize="20" FontAttributes="Bold" TextColor="#E8E8E8" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Abilities -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Caratteristiche"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Forza" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding StrengthText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding StrengthModifier, StringFormat='{0:+0;-0;0}'}" FontSize="16" FontAttributes="Bold" TextColor="#B08D57" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="Destrezza" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding DexterityText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding DexterityModifier, StringFormat='{0:+0;-0;0}'}" FontSize="16" FontAttributes="Bold" TextColor="#B08D57" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Spacing="4">
+                                <Label Text="Costituzione" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding ConstitutionText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding ConstitutionModifier, StringFormat='{0:+0;-0;0}'}" FontSize="16" FontAttributes="Bold" TextColor="#B08D57" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                                <Label Text="Intelligenza" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding IntelligenceText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding IntelligenceModifier, StringFormat='{0:+0;-0;0}'}" FontSize="16" FontAttributes="Bold" TextColor="#B08D57" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="2" Spacing="4">
+                                <Label Text="Saggezza" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding WisdomText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding WisdomModifier, StringFormat='{0:+0;-0;0}'}" FontSize="16" FontAttributes="Bold" TextColor="#B08D57" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="4">
+                                <Label Text="Carisma" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding CharismaText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding CharismaModifier, StringFormat='{0:+0;-0;0}'}" FontSize="16" FontAttributes="Bold" TextColor="#B08D57" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Hit points -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Punti ferita"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="HP correnti" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding CurrentHpText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" FontSize="20" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="HP massimi" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding MaxHpText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" FontSize="20" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="HP temporanei" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                            <Entry Text="{Binding TemporaryHpText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#4FC3F7" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+                              ColumnSpacing="8">
+                            <Button Grid.Column="0"
+                                    Text="− HP"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    Padding="18,12"
+                                    BackgroundColor="#3A1F1F"
+                                    TextColor="#EF5350"
+                                    CornerRadius="10"
+                                    Clicked="OnDamageClicked" />
+                            <Entry Grid.Column="1"
+                                   x:Name="HpQuickAmount"
+                                   Text="1"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="#161616"
+                                   TextColor="#E8E8E8"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center" />
+                            <Button Grid.Column="2"
+                                    Text="+ HP"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    Padding="18,12"
+                                    BackgroundColor="#1E2B22"
+                                    TextColor="#4CAF50"
+                                    CornerRadius="10"
+                                    Clicked="OnHealClicked" />
+                            <Button Grid.Column="3"
+                                    Text="Imposta"
+                                    FontSize="14"
+                                    Padding="14,12"
+                                    BackgroundColor="#2E2E2E"
+                                    TextColor="#E8E8E8"
+                                    CornerRadius="10"
+                                    Clicked="OnSetHpClicked" />
+                            <Button Grid.Column="4"
+                                    Text="Temp"
+                                    FontSize="14"
+                                    Padding="14,12"
+                                    BackgroundColor="#1B2A33"
+                                    TextColor="#4FC3F7"
+                                    CornerRadius="10"
+                                    Clicked="OnSetTempHpClicked" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Conditions -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Condizioni"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <FlexLayout Wrap="Wrap"
+                                    BindableLayout.ItemsSource="{Binding Conditions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ConditionItemViewModel">
+                                    <Button Text="{Binding Name}"
+                                            FontSize="12"
+                                            Padding="12,6"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="{Binding BackgroundColor}"
+                                            TextColor="{Binding TextColor}"
+                                            CornerRadius="16"
+                                            Clicked="OnConditionClicked"
+                                            CommandParameter="{Binding .}" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Inventory -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Inventario"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Entry x:Name="NewItemEntry"
+                                   Placeholder="Nome oggetto"
+                                   BackgroundColor="#161616"
+                                   TextColor="#E8E8E8" />
+                            <Button Grid.Column="1"
+                                    Text="Aggiungi"
+                                    FontSize="13"
+                                    Padding="12,8"
+                                    BackgroundColor="#2E2E2E"
+                                    TextColor="#E8E8E8"
+                                    CornerRadius="8"
+                                    Clicked="OnAddItemClicked" />
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8"
+                                             IsVisible="{Binding HasInventory}"
+                                             BindableLayout.ItemsSource="{Binding Inventory}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="characters:InventoryItemInfo">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          ColumnSpacing="8">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="14"
+                                               TextColor="#E8E8E8"
+                                               VerticalOptions="Center"
+                                               LineBreakMode="TailTruncation" />
+                                        <Button Grid.Column="1"
+                                                Text="Rimuovi"
+                                                FontSize="12"
+                                                Padding="10,6"
+                                                BackgroundColor="#3A1F1F"
+                                                TextColor="#EF5350"
+                                                CornerRadius="8"
+                                                Clicked="OnRemoveItemClicked"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <Label Text="Inventario vuoto"
+                               IsVisible="{Binding HasNoInventory}"
+                               FontSize="13"
+                               TextColor="#7A7A7A" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Notes -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Note"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <Editor Text="{Binding Notes}"
+                                Placeholder="Note sul personaggio..."
+                                BackgroundColor="#161616"
+                                TextColor="#D8D8D8"
+                                HeightRequest="140" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Save (footer) -->
+                <Button Text="Salva personaggio"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#B08D57"
+                        TextColor="#1A1A1A"
+                        CornerRadius="12"
+                        MinimumHeightRequest="52"
+                        Clicked="OnSaveClicked" />
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#B08D57"
+                                   Margin="0,12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
