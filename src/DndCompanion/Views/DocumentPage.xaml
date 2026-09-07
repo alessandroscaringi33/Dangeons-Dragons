@@ -18,6 +18,8 @@
                      Clicked="OnWorldClicked" />
         <ToolbarItem Text="Sessione"
                      Clicked="OnSessionClicked" />
+        <ToolbarItem Text="Tiro"
+                     Clicked="OnSkillCheckClicked" />
     </ContentPage.ToolbarItems>
 
     <ScrollView>

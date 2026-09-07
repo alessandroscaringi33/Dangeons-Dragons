@@ -34,6 +34,8 @@ public sealed class CampaignDbContext : DbContext
 
     public DbSet<DiceRoll> DiceRolls => Set<DiceRoll>();
 
+    public DbSet<SkillCheck> SkillChecks => Set<SkillCheck>();
+
     public DbSet<Combat> Combats => Set<Combat>();
 
     public DbSet<Combatant> Combatants => Set<Combatant>();

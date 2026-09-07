@@ -31,6 +31,8 @@ public class Session : Entity
 
     public List<Note> SessionNotes { get; set; } = new();
 
+    public List<SkillCheck> SkillChecks { get; set; } = new();
+
     public void Start()
     {
         IsActive = true;

@@ -92,4 +92,15 @@ public partial class DocumentPage : ContentPage
                 ["CampaignName"] = _viewModel.CampaignName
             });
     }
+
+    private async void OnSkillCheckClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(SkillCheckPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
 }

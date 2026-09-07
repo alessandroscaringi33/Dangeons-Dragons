@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.SkillCheckPage"
+             x:DataType="vm:SkillCheckViewModel"
+             BackgroundColor="#121212"
+             Title="Nuovo tiro">
+
+    <Grid RowDefinitions="Auto,*"
+          RowSpacing="8">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="16,12,16,0" Spacing="2">
+            <Label Text="{Binding CampaignName}"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#E8E8E8"
+                   LineBreakMode="TailTruncation"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Skill Check"
+                   FontSize="13"
+                   TextColor="#7A7A7A"
+                   SemanticProperties.Description="Pannello per effettuare e registrare tiri" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Form -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="12">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Personaggio" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona personaggio"
+                                    ItemsSource="{Binding Characters}"
+                                    SelectedItem="{Binding SelectedCharacterName}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Abilità" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona abilità"
+                                    ItemsSource="{Binding Skills}"
+                                    SelectedItem="{Binding SelectedSkill}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="CD" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding DifficultyClassText}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="#161616"
+                                       TextColor="#E8E8E8"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="Dado" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Picker Title="Dado"
+                                        ItemsSource="{Binding DiceTypes}"
+                                        SelectedItem="{Binding SelectedDiceType}"
+                                        TextColor="#E8E8E8"
+                                        TitleColor="#5A5A5A"
+                                        BackgroundColor="#161616" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="4">
+                                <Label Text="Modificatore" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding ModifierText}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="#161616"
+                                       TextColor="#E8E8E8"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Label Text="Tiro fisico / manuale"
+                                       FontSize="13"
+                                       TextColor="#E8E8E8"
+                                       VerticalOptions="Center" />
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding IsPhysicalRoll}"
+                                        VerticalOptions="Center" />
+                            </Grid>
+                            <Entry IsVisible="{Binding IsPhysicalRoll}"
+                                   Text="{Binding PhysicalRollText}"
+                                   Placeholder="Inserisci il valore del dado (es. 17)"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="#161616"
+                                   TextColor="#E8E8E8"
+                                   PlaceholderColor="#5A5A5A" />
+                        </VerticalStackLayout>
+
+                        <!-- Status -->
+                        <Label Text="{Binding StatusMessage}"
+                               IsVisible="{Binding HasStatusMessage}"
+                               FontSize="13"
+                               TextColor="#FFB74D"
+                               LineBreakMode="WordWrap" />
+
+                        <!-- Outcome -->
+                        <Border IsVisible="{Binding HasOutcome}"
+                                BackgroundColor="{Binding OutcomeBackgroundColor}"
+                                Stroke="{Binding OutcomeColor}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding OutcomeText}"
+                                       FontSize="26"
+                                       FontAttributes="Bold"
+                                       TextColor="{Binding OutcomeColor}"
+                                       HorizontalOptions="Center" />
+                                <Label Text="{Binding OutcomeSummary}"
+                                       FontSize="13"
+                                       TextColor="#D8D8D8"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button Text="Tiro"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                BackgroundColor="#B08D57"
+                                TextColor="#1A1A1A"
+                                CornerRadius="12"
+                                MinimumHeightRequest="52"
+                                Clicked="OnRollClicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Recent checks -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Ultimi tiri"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+
+                        <VerticalStackLayout Spacing="8"
+                                             IsVisible="{Binding HasRecentChecks}"
+                                             BindableLayout.ItemsSource="{Binding RecentChecks}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:SkillCheckItemViewModel">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout Spacing="1">
+                                            <Label Text="{Binding Skill}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#E8E8E8" />
+                                            <Label Text="{Binding CharacterName}"
+                                                   FontSize="11"
+                                                   TextColor="#7A7A7A"
+                                                   IsVisible="{Binding HasCharacter}" />
+                                            <Label Text="{Binding TimeText}"
+                                                   FontSize="11"
+                                                   TextColor="#5A5A5A" />
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                                            <Label Text="{Binding TotalText}"
+                                                   FontSize="13"
+                                                   TextColor="#E8E8E8"
+                                                   HorizontalTextAlignment="End" />
+                                            <Label Text="{Binding OutcomeText}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{Binding OutcomeColor}"
+                                                   HorizontalTextAlignment="End" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <Label Text="Nessun tiro registrato in questa sessione."
+                               IsVisible="{Binding HasNoRecentChecks}"
+                               FontSize="13"
+                               TextColor="#7A7A7A" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#B08D57"
+                                   Margin="0,12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

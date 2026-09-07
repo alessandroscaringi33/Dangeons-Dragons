@@ -54,5 +54,10 @@ public sealed class SessionConfiguration : IEntityTypeConfiguration<Session>
             .WithOne()
             .HasForeignKey(n => n.SessionId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(s => s.SkillChecks)
+            .WithOne()
+            .HasForeignKey(sk => sk.SessionId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

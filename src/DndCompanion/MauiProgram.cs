@@ -49,6 +49,8 @@ public static class MauiProgram
         builder.Services.AddTransient<LocationDetailPage>();
         builder.Services.AddTransient<QuestDetailViewModel>();
         builder.Services.AddTransient<QuestDetailPage>();
+        builder.Services.AddTransient<SkillCheckViewModel>();
+        builder.Services.AddTransient<SkillCheckPage>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<MainPage>();
 
