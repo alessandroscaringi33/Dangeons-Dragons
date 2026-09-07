@@ -20,7 +20,8 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 6 — NPC e luoghi | **Completata** |
 | Phase 7 — Quest e Mondo | **Completata** |
 | Phase 8 — Dice Engine | **Completata** |
-| Phase 9+ | Non avviate |
+| Phase 9 — Sessione e Skill Check | **Completata** |
+| Phase 10+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
 base MVVM. Il **Domain Model** (`DndCompanion.Core/Domain`) contiene tutte le
@@ -76,7 +77,16 @@ in `DndCompanion.Core/Dice`: `DiceParser` analizza notazioni come `1d20`,
 **tiro fisico** — in quest'ultimo caso il valore inserito dal DM (es. 17) è
 usato come risultato reale e non viene mai generato un valore casuale.
 `DiceService` è la facciata registrata in DI. Il totale è sempre derivato dai
-risultati più il modificatore.
+risultati più il modificatore. Il **Skill Check** (Phase 9) registra i tiri
+nella **sessione attiva** della campagna (creandola se manca). Ogni check
+persiste `personaggio`, `abilità`, `tiro`, `modificatore`, `CD`, `totale`,
+`successo/fallimento`, `tiro fisico` e `timestamp` (`SkillCheck` +
+`SessionEvent` di tipo `SkillCheck` nella timeline). Il tiro usa il Dice Engine
+e, se `IsPhysicalRoll`, il valore inserito dal DM (es. 13) è usato come
+risultato reale. La schermata **Nuovo tiro** (raggiungibile dalla schermata
+campagna) permette di selezionare personaggio, abilità, CD, tipo di dado e
+modificatore, con feedback immediato `SUCCESSO / FALLIMENTO` e lo storico degli
+ultimi tiri.
 
 ---
 
@@ -115,6 +125,7 @@ src/
     Locations/             # contratti servizio luoghi (Phase 6)
     Quests/                # contratti servizio quest (Phase 7)
     Dice/                  # Dice Engine: parser, calcolatore e servizio (Phase 8)
+    SkillChecks/           # contratti servizio skill check (Phase 9)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -132,6 +143,8 @@ src/
     Locations/             # LocationService: CRUD luoghi (Phase 6)
     Quests/                # QuestService: CRUD, ricerca, stato e link a
                            # capitolo/scena/luogo/NPC (Phase 7)
+    SkillChecks/           # SkillCheckService: registra tiri nella sessione
+                           # attiva, esito e tiro fisico (Phase 9)
     (Pdf, Repository nelle fasi successive)
   DndCompanion.Tests/
     ViewModelBaseTests.cs
@@ -144,6 +157,7 @@ src/
     LocationServiceTests.cs
     QuestServiceTests.cs
     DiceEngineTests.cs
+    SkillCheckServiceTests.cs
 ```
 
 ### Responsabilità dei layer
