@@ -119,4 +119,7 @@ public sealed class CharacterItemViewModel : ViewModelBase
     public bool HasConditions => !string.IsNullOrEmpty(ConditionsText);
 
     public Color ConditionsColor => string.IsNullOrEmpty(ConditionsText) ? NeutralColor : Color.FromArgb("#FF9800");
+
+    /// <summary>Quick damage/heal amount used by the in-session controls.</summary>
+    public string QuickAmount { get; set; } = "1";
 }

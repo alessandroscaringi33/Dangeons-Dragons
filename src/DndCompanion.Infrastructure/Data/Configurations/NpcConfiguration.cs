@@ -26,5 +26,19 @@ public sealed class NpcConfiguration : IEntityTypeConfiguration<Npc>
             .HasMaxLength(4000);
 
         builder.HasIndex(n => n.CampaignId);
+
+        builder.HasIndex(n => n.SceneId);
+
+        builder.HasIndex(n => n.LocationId);
+
+        builder.HasOne(n => n.Scene)
+            .WithMany()
+            .HasForeignKey(n => n.SceneId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(n => n.Location)
+            .WithMany()
+            .HasForeignKey(n => n.LocationId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

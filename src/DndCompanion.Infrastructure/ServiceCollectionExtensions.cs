@@ -1,11 +1,15 @@
 using DndCompanion.Core.Campaigns;
 using DndCompanion.Core.Characters;
 using DndCompanion.Core.Documents;
+using DndCompanion.Core.Locations;
+using DndCompanion.Core.Npcs;
 using DndCompanion.Core.Story;
 using DndCompanion.Infrastructure.Campaigns;
 using DndCompanion.Infrastructure.Characters;
 using DndCompanion.Infrastructure.Data;
 using DndCompanion.Infrastructure.Documents;
+using DndCompanion.Infrastructure.Locations;
+using DndCompanion.Infrastructure.Npcs;
 using DndCompanion.Infrastructure.Story;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +31,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IChapterService, ChapterService>();
         services.AddSingleton<ISceneService, SceneService>();
         services.AddSingleton<ICharacterService, CharacterService>();
+        services.AddSingleton<INpcService, NpcService>();
+        services.AddSingleton<ILocationService, LocationService>();
         return services;
     }
 }

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.NpcDetailPage"
+             x:DataType="vm:NpcDetailViewModel"
+             BackgroundColor="#121212"
+             Title="Scheda NPC">
+
+    <Grid RowDefinitions="Auto,*"
+          RowSpacing="8">
+
+        <!-- Header -->
+        <Grid Grid.Row="0"
+              Padding="16,12,16,0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="{Binding Name}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#E8E8E8"
+                       LineBreakMode="TailTruncation"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="{Binding CampaignName}"
+                       FontSize="12"
+                       TextColor="#7A7A7A"
+                       LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="Salva"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    Padding="16,8"
+                    BackgroundColor="#B08D57"
+                    TextColor="#1A1A1A"
+                    CornerRadius="10"
+                    Clicked="OnSaveClicked"
+                    VerticalOptions="Center" />
+        </Grid>
+
+        <!-- Status -->
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="13"
+               TextColor="#9E9E9E"
+               Padding="16,0,16,4"
+               LineBreakMode="WordWrap" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Identity -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Identità"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Nome" FontSize="11" TextColor="#7A7A7A" />
+                            <Entry Text="{Binding Name}" Placeholder="Nome" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Ruolo" FontSize="11" TextColor="#7A7A7A" />
+                            <Entry Text="{Binding Role}" Placeholder="Ruolo (es. Mercante, Guardia...)" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Descrizione" FontSize="11" TextColor="#7A7A7A" />
+                            <Editor Text="{Binding Description}"
+                                    Placeholder="Descrizione dell'NPC..."
+                                    BackgroundColor="#161616"
+                                    TextColor="#D8D8D8"
+                                    HeightRequest="90" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Combat stats -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Statistiche"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="HP correnti" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding CurrentHpText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="HP max" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding MaxHpText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="4">
+                                <Label Text="CA" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding ArmorClassText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Mod. iniziativa" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Entry Text="{Binding InitiativeText}" Keyboard="Numeric" BackgroundColor="#161616" TextColor="#E8E8E8" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="Conosciuto dai giocatori" FontSize="11" TextColor="#7A7A7A" HorizontalOptions="Center" />
+                                <Switch IsToggled="{Binding IsKnown}"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Quick HP -->
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="8">
+                            <Button Grid.Column="0"
+                                    Text="− HP"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    Padding="18,12"
+                                    BackgroundColor="#3A1F1F"
+                                    TextColor="#EF5350"
+                                    CornerRadius="10"
+                                    Clicked="OnDamageClicked" />
+                            <Entry Grid.Column="1"
+                                   x:Name="HpQuickAmount"
+                                   Text="1"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="#161616"
+                                   TextColor="#E8E8E8"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center" />
+                            <Button Grid.Column="2"
+                                    Text="+ HP"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    Padding="18,12"
+                                    BackgroundColor="#1E2B22"
+                                    TextColor="#4CAF50"
+                                    CornerRadius="10"
+                                    Clicked="OnHealClicked" />
+                            <Button Grid.Column="3"
+                                    Text="Imposta"
+                                    FontSize="14"
+                                    Padding="14,12"
+                                    BackgroundColor="#2E2E2E"
+                                    TextColor="#E8E8E8"
+                                    CornerRadius="10"
+                                    Clicked="OnSetHpClicked" />
+                            <Button Grid.Column="4"
+                                    Text="{Binding IsAlive, StringFormat='{0}'}"
+                                    FontSize="14"
+                                    Padding="14,12"
+                                    BackgroundColor="#3A2F22"
+                                    TextColor="#B08D57"
+                                    CornerRadius="10"
+                                    Clicked="OnToggleAliveClicked" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Links -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Collegamenti"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Scena" FontSize="11" TextColor="#7A7A7A" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Picker Grid.Column="0"
+                                        Title="Seleziona una scena"
+                                        ItemsSource="{Binding Scenes}"
+                                        SelectedItem="{Binding SelectedSceneTitle}"
+                                        TextColor="#E8E8E8"
+                                        TitleColor="#5A5A5A"
+                                        BackgroundColor="#161616" />
+                                <Button Grid.Column="1"
+                                        Text="Collega"
+                                        FontSize="13"
+                                        Padding="12,6"
+                                        BackgroundColor="#2E2E2E"
+                                        TextColor="#E8E8E8"
+                                        CornerRadius="8"
+                                        VerticalOptions="Center"
+                                        Clicked="OnLinkSceneClicked" />
+                            </Grid>
+                            <Button Text="Rimuovi collegamento scena"
+                                    FontSize="12"
+                                    Padding="10,4"
+                                    BackgroundColor="#3A1F1F"
+                                    TextColor="#EF5350"
+                                    CornerRadius="8"
+                                    IsVisible="{Binding HasSceneLink}"
+                                    HorizontalOptions="Start"
+                                    Clicked="OnClearSceneClicked" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Luogo" FontSize="11" TextColor="#7A7A7A" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Picker Grid.Column="0"
+                                        Title="Seleziona un luogo"
+                                        ItemsSource="{Binding Locations}"
+                                        SelectedItem="{Binding SelectedLocationName}"
+                                        TextColor="#E8E8E8"
+                                        TitleColor="#5A5A5A"
+                                        BackgroundColor="#161616" />
+                                <Button Grid.Column="1"
+                                        Text="Collega"
+                                        FontSize="13"
+                                        Padding="12,6"
+                                        BackgroundColor="#2E2E2E"
+                                        TextColor="#E8E8E8"
+                                        CornerRadius="8"
+                                        VerticalOptions="Center"
+                                        Clicked="OnLinkLocationClicked" />
+                            </Grid>
+                            <Button Text="Rimuovi collegamento luogo"
+                                    FontSize="12"
+                                    Padding="10,4"
+                                    BackgroundColor="#3A1F1F"
+                                    TextColor="#EF5350"
+                                    CornerRadius="8"
+                                    IsVisible="{Binding HasLocationLink}"
+                                    HorizontalOptions="Start"
+                                    Clicked="OnClearLocationClicked" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Notes -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Note"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <Editor Text="{Binding Notes}"
+                                Placeholder="Note sull'NPC..."
+                                BackgroundColor="#161616"
+                                TextColor="#D8D8D8"
+                                HeightRequest="140" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Save -->
+                <Button Text="Salva NPC"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#B08D57"
+                        TextColor="#1A1A1A"
+                        CornerRadius="12"
+                        MinimumHeightRequest="52"
+                        Clicked="OnSaveClicked" />
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#B08D57"
+                                   Margin="0,12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

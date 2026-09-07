@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.SessionQuickViewPage"
+             x:DataType="vm:SessionQuickViewViewModel"
+             BackgroundColor="#121212"
+             Title="Sessione">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="8">
+
+        <!-- Header -->
+        <Grid Grid.Row="0"
+              Padding="16,12,16,0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="{Binding CampaignName}"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="#E8E8E8"
+                       LineBreakMode="TailTruncation"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="Sessione in corso"
+                       FontSize="13"
+                       TextColor="#7A7A7A"
+                       SemanticProperties.Description="Visualizzazione rapida per il DM" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="Aggiorna"
+                    FontSize="13"
+                    Padding="12,6"
+                    BackgroundColor="#2E2E2E"
+                    TextColor="#E8E8E8"
+                    CornerRadius="8"
+                    VerticalOptions="Center"
+                    Clicked="OnRefreshClicked" />
+        </Grid>
+
+        <!-- Current scene -->
+        <Border Grid.Row="1"
+                Margin="16,8,16,0"
+                BackgroundColor="#2A2218"
+                Stroke="#B08D57"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 14"
+                Padding="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Scena corrente"
+                       FontSize="11"
+                       FontAttributes="Bold"
+                       TextColor="#B08D57" />
+                <Label Text="{Binding CurrentSceneText}"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="#E8E8E8"
+                       LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Status -->
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="13"
+               TextColor="#9E9E9E"
+               Margin="16,0"
+               LineBreakMode="WordWrap" />
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- NPCs -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="NPC"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#E8E8E8" />
+                    <VerticalStackLayout Spacing="8"
+                                         BindableLayout.ItemsSource="{Binding Npcs}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:NpcItemViewModel">
+                                <Border BackgroundColor="#1C1C1C"
+                                        Stroke="#2E2E2E"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="12">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <VerticalStackLayout Spacing="1">
+                                                <Label Text="{Binding Name}"
+                                                       FontSize="15"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#E8E8E8"
+                                                       LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding RoleText}"
+                                                       FontSize="11"
+                                                       TextColor="#7A7A7A" />
+                                            </VerticalStackLayout>
+                                            <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                                                <Label Text="{Binding StatusText}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{Binding StatusColor}"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="{Binding HpText}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#E8E8E8"
+                                                       VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                        </Grid>
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="6">
+                                            <Button Grid.Column="0"
+                                                    Text="− HP"
+                                                    FontSize="13"
+                                                    Padding="10,4"
+                                                    BackgroundColor="#3A1F1F"
+                                                    TextColor="#EF5350"
+                                                    CornerRadius="8"
+                                                    Clicked="OnNpcDamageClicked"
+                                                    CommandParameter="{Binding .}" />
+                                            <Entry Grid.Column="1"
+                                                   Text="{Binding QuickAmount}"
+                                                   Keyboard="Numeric"
+                                                   BackgroundColor="#161616"
+                                                   TextColor="#E8E8E8"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalOptions="Center" />
+                                            <Button Grid.Column="2"
+                                                    Text="+ HP"
+                                                    FontSize="13"
+                                                    Padding="10,4"
+                                                    BackgroundColor="#1E2B22"
+                                                    TextColor="#4CAF50"
+                                                    CornerRadius="8"
+                                                    Clicked="OnNpcHealClicked"
+                                                    CommandParameter="{Binding .}" />
+                                            <Button Grid.Column="3"
+                                                    Text="{Binding StatusText}"
+                                                    FontSize="12"
+                                                    Padding="10,4"
+                                                    BackgroundColor="#3A2F22"
+                                                    TextColor="#B08D57"
+                                                    CornerRadius="8"
+                                                    Clicked="OnNpcToggleAliveClicked"
+                                                    CommandParameter="{Binding .}" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Label Text="Nessun NPC nella campagna"
+                           IsVisible="{Binding HasNoNpcs}"
+                           FontSize="13"
+                           TextColor="#7A7A7A" />
+                </VerticalStackLayout>
+
+                <!-- Characters -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Personaggi"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#E8E8E8" />
+                    <VerticalStackLayout Spacing="8"
+                                         BindableLayout.ItemsSource="{Binding Characters}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CharacterItemViewModel">
+                                <Border BackgroundColor="#1C1C1C"
+                                        Stroke="#2E2E2E"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="12">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <VerticalStackLayout Spacing="1">
+                                                <Label Text="{Binding Name}"
+                                                       FontSize="15"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#E8E8E8"
+                                                       LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding RaceClassText}"
+                                                       FontSize="11"
+                                                       TextColor="#7A7A7A" />
+                                            </VerticalStackLayout>
+                                            <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                                                <Label Text="{Binding HpStatusText}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{Binding HpStatusColor}"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="{Binding HpText}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{Binding HpTextColor}"
+                                                       VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                        </Grid>
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
+                                            <Button Grid.Column="0"
+                                                    Text="− HP"
+                                                    FontSize="13"
+                                                    Padding="10,4"
+                                                    BackgroundColor="#3A1F1F"
+                                                    TextColor="#EF5350"
+                                                    CornerRadius="8"
+                                                    Clicked="OnCharacterDamageClicked"
+                                                    CommandParameter="{Binding .}" />
+                                            <Entry Grid.Column="1"
+                                                   Text="{Binding QuickAmount}"
+                                                   Keyboard="Numeric"
+                                                   BackgroundColor="#161616"
+                                                   TextColor="#E8E8E8"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalOptions="Center" />
+                                            <Button Grid.Column="2"
+                                                    Text="+ HP"
+                                                    FontSize="13"
+                                                    Padding="10,4"
+                                                    BackgroundColor="#1E2B22"
+                                                    TextColor="#4CAF50"
+                                                    CornerRadius="8"
+                                                    Clicked="OnCharacterHealClicked"
+                                                    CommandParameter="{Binding .}" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Label Text="Nessun personaggio nella campagna"
+                           IsVisible="{Binding HasNoCharacters}"
+                           FontSize="13"
+                           TextColor="#7A7A7A" />
+                </VerticalStackLayout>
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#B08D57"
+                                   Margin="0,12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

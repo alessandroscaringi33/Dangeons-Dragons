@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.LocationsPage"
+             x:DataType="vm:LocationsViewModel"
+             BackgroundColor="#121212"
+             Title="Luoghi">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          ColumnDefinitions="*"
+          Padding="16"
+          RowSpacing="12">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="{Binding CampaignName}"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#E8E8E8"
+                   LineBreakMode="TailTruncation"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Luoghi della campagna"
+                   FontSize="13"
+                   TextColor="#7A7A7A"
+                   SemanticProperties.Description="Luoghi della campagna" />
+        </VerticalStackLayout>
+
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="14"
+               TextColor="#9E9E9E"
+               LineBreakMode="WordWrap" />
+
+        <Grid Grid.Row="2">
+            <CollectionView ItemsSource="{Binding Locations}"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Default">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout IsVisible="{Binding HasNoLocations}"
+                                         Spacing="12"
+                                         Padding="0,48"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="Center">
+                        <Label Text="Nessun luogo"
+                               FontSize="18"
+                               TextColor="#9E9E9E"
+                               HorizontalOptions="Center" />
+                        <Label Text="Aggiungi il primo luogo per iniziare."
+                               FontSize="14"
+                               TextColor="#7A7A7A"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LocationItemViewModel">
+                        <Border BackgroundColor="#1C1C1C"
+                                Stroke="#2E2E2E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="16"
+                                Margin="0,0,0,10">
+                            <Grid ColumnDefinitions="*,Auto,Auto"
+                                  ColumnSpacing="8"
+                                  RowDefinitions="Auto,Auto"
+                                  RowSpacing="2">
+                                <Label Grid.Row="0"
+                                       Text="{Binding Name}"
+                                       FontSize="17"
+                                       FontAttributes="Bold"
+                                       TextColor="#E8E8E8"
+                                       LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="1"
+                                       Text="{Binding Description}"
+                                       FontSize="12"
+                                       TextColor="#7A7A7A"
+                                       LineBreakMode="TailTruncation"
+                                       IsVisible="{Binding HasDescription}" />
+                                <Button Grid.Row="0"
+                                        Grid.RowSpan="2"
+                                        Grid.Column="1"
+                                        Text="Modifica"
+                                        FontSize="12"
+                                        Padding="10,6"
+                                        BackgroundColor="#2E2E2E"
+                                        TextColor="#E8E8E8"
+                                        CornerRadius="8"
+                                        Clicked="OnEditClicked"
+                                        CommandParameter="{Binding .}" />
+                                <Button Grid.Row="0"
+                                        Grid.RowSpan="2"
+                                        Grid.Column="2"
+                                        Text="Elimina"
+                                        FontSize="12"
+                                        Padding="10,6"
+                                        BackgroundColor="#3A1F1F"
+                                        TextColor="#EF5350"
+                                        CornerRadius="8"
+                                        Clicked="OnDeleteClicked"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#B08D57"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+        </Grid>
+
+        <Button Grid.Row="3"
+                Text="Nuovo luogo"
+                Clicked="OnNewLocationClicked"
+                FontSize="16"
+                FontAttributes="Bold"
+                BackgroundColor="#B08D57"
+                TextColor="#1A1A1A"
+                CornerRadius="12"
+                MinimumHeightRequest="52" />
+    </Grid>
+
+</ContentPage>

@@ -35,6 +35,14 @@ public static class MauiProgram
         builder.Services.AddTransient<CharactersPage>();
         builder.Services.AddTransient<CharacterDetailViewModel>();
         builder.Services.AddTransient<CharacterDetailPage>();
+        builder.Services.AddTransient<NpcsViewModel>();
+        builder.Services.AddTransient<NpcsPage>();
+        builder.Services.AddTransient<NpcDetailViewModel>();
+        builder.Services.AddTransient<NpcDetailPage>();
+        builder.Services.AddTransient<LocationsViewModel>();
+        builder.Services.AddTransient<LocationsPage>();
+        builder.Services.AddTransient<SessionQuickViewViewModel>();
+        builder.Services.AddTransient<SessionQuickViewPage>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<MainPage>();
 

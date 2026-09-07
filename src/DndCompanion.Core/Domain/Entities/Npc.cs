@@ -30,6 +30,18 @@ public class Npc : Entity
     /// <summary>Whether the NPC has been revealed to the players.</summary>
     public bool IsKnown { get; set; }
 
+    /// <summary>Optional scene the NPC is linked to.</summary>
+    public Guid? SceneId { get; set; }
+
+    /// <summary>Optional location the NPC is linked to.</summary>
+    public Guid? LocationId { get; set; }
+
+    /// <summary>Navigation to the linked scene, if any.</summary>
+    public Scene? Scene { get; set; }
+
+    /// <summary>Navigation to the linked location, if any.</summary>
+    public Location? Location { get; set; }
+
     /// <summary>
     /// Applies damage and marks the NPC dead when HP reaches zero.
     /// Returns the amount of HP actually lost.

@@ -59,4 +59,37 @@ public partial class DocumentPage : ContentPage
                 ["CampaignName"] = _viewModel.CampaignName
             });
     }
+
+    private async void OnNpcsClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(NpcsPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
+
+    private async void OnLocationsClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(LocationsPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
+
+    private async void OnSessionClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(SessionQuickViewPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
 }

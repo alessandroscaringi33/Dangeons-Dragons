@@ -12,6 +12,12 @@
                      Clicked="OnStoryClicked" />
         <ToolbarItem Text="Personaggi"
                      Clicked="OnCharactersClicked" />
+        <ToolbarItem Text="NPC"
+                     Clicked="OnNpcsClicked" />
+        <ToolbarItem Text="Luoghi"
+                     Clicked="OnLocationsClicked" />
+        <ToolbarItem Text="Sessione"
+                     Clicked="OnSessionClicked" />
     </ContentPage.ToolbarItems>
 
     <ScrollView>

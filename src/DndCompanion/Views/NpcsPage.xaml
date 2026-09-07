@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.NpcsPage"
+             x:DataType="vm:NpcsViewModel"
+             BackgroundColor="#121212"
+             Title="NPC">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto"
+          ColumnDefinitions="*"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="{Binding CampaignName}"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#E8E8E8"
+                   LineBreakMode="TailTruncation"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Non player characters"
+                   FontSize="13"
+                   TextColor="#7A7A7A"
+                   SemanticProperties.Description="NPC della campagna" />
+        </VerticalStackLayout>
+
+        <!-- Search -->
+        <Border Grid.Row="1"
+                BackgroundColor="#1C1C1C"
+                Stroke="#2E2E2E"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                Padding="8,4">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <Label Text="🔍"
+                       FontSize="16"
+                       VerticalOptions="Center"
+                       Padding="4,0" />
+                <Entry Grid.Column="1"
+                       x:Name="SearchBarEntry"
+                       Text="{Binding SearchText}"
+                       Placeholder="Cerca per nome, ruolo o descrizione..."
+                       BackgroundColor="Transparent"
+                       TextColor="#E8E8E8"
+                       PlaceholderColor="#5A5A5A"
+                       VerticalOptions="Center"
+                       ReturnType="Search"
+                       TextChanged="OnSearchTextChanged" />
+                <Button Grid.Column="2"
+                        Text="Cerca"
+                        FontSize="13"
+                        Padding="12,6"
+                        BackgroundColor="#2E2E2E"
+                        TextColor="#E8E8E8"
+                        CornerRadius="8"
+                        Clicked="OnSearchClicked" />
+            </Grid>
+        </Border>
+
+        <!-- Status message -->
+        <Label Grid.Row="2"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="14"
+               TextColor="#9E9E9E"
+               LineBreakMode="WordWrap" />
+
+        <!-- NPC list -->
+        <Grid Grid.Row="3">
+            <CollectionView ItemsSource="{Binding Npcs}"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Default">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout IsVisible="{Binding HasNoNpcs}"
+                                         Spacing="12"
+                                         Padding="0,48"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="Center">
+                        <Label Text="Nessun NPC trovato"
+                               FontSize="18"
+                               TextColor="#9E9E9E"
+                               HorizontalOptions="Center" />
+                        <Label Text="Crea un NPC o modifica la ricerca."
+                               FontSize="14"
+                               TextColor="#7A7A7A"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:NpcItemViewModel">
+                        <Border BackgroundColor="#1C1C1C"
+                                Stroke="#2E2E2E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="16"
+                                Margin="0,0,0,10">
+
+                            <VerticalStackLayout Spacing="10">
+
+                                <!-- Header -->
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="19"
+                                               FontAttributes="Bold"
+                                               TextColor="#E8E8E8"
+                                               LineBreakMode="TailTruncation"
+                                               SemanticProperties.HeadingLevel="Level3" />
+                                        <Label Text="{Binding RoleText}"
+                                               FontSize="13"
+                                               TextColor="#9E9E9E"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding LinkText}"
+                                               FontSize="12"
+                                               TextColor="#7A7A7A"
+                                               LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Start">
+                                        <Label Text="{Binding StatusText}"
+                                               FontSize="12"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding StatusColor}"
+                                               VerticalOptions="Center" />
+                                        <Button Text="Apri"
+                                                FontSize="13"
+                                                Padding="12,6"
+                                                BackgroundColor="#B08D57"
+                                                TextColor="#1A1A1A"
+                                                CornerRadius="8"
+                                                Clicked="OnOpenClicked"
+                                                CommandParameter="{Binding .}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <!-- Stats -->
+                                <HorizontalStackLayout Spacing="16">
+                                    <Label Text="{Binding HpText}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#E8E8E8" />
+                                    <Label Text="{Binding ArmorClassText}"
+                                           FontSize="13"
+                                           TextColor="#9E9E9E" />
+                                    <Label Text="{Binding InitiativeText}"
+                                           FontSize="13"
+                                           TextColor="#9E9E9E" />
+                                </HorizontalStackLayout>
+
+                                <!-- Quick actions -->
+                                <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto"
+                                      ColumnSpacing="8">
+                                    <Button Grid.Column="0"
+                                            Text="− HP"
+                                            FontSize="13"
+                                            Padding="12,6"
+                                            BackgroundColor="#3A1F1F"
+                                            TextColor="#EF5350"
+                                            CornerRadius="8"
+                                            Clicked="OnDamageClicked"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Grid.Column="1"
+                                            Text="+ HP"
+                                            FontSize="13"
+                                            Padding="12,6"
+                                            BackgroundColor="#1E2B22"
+                                            TextColor="#4CAF50"
+                                            CornerRadius="8"
+                                            Clicked="OnHealClicked"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Grid.Column="2"
+                                            Text="Imposta"
+                                            FontSize="13"
+                                            Padding="12,6"
+                                            BackgroundColor="#2E2E2E"
+                                            TextColor="#E8E8E8"
+                                            CornerRadius="8"
+                                            Clicked="OnSetHpClicked"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Grid.Column="4"
+                                            Text="{Binding StatusText}"
+                                            FontSize="13"
+                                            Padding="12,6"
+                                            BackgroundColor="#3A2F22"
+                                            TextColor="#B08D57"
+                                            CornerRadius="8"
+                                            Clicked="OnToggleAliveClicked"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Grid.Column="5"
+                                            Text="Elimina"
+                                            FontSize="13"
+                                            Padding="12,6"
+                                            BackgroundColor="#2A2A2A"
+                                            TextColor="#9E9E9E"
+                                            CornerRadius="8"
+                                            Clicked="OnDeleteClicked"
+                                            CommandParameter="{Binding .}" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#B08D57"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+        </Grid>
+
+        <!-- New NPC -->
+        <Button Grid.Row="4"
+                Text="Nuovo NPC"
+                Clicked="OnNewNpcClicked"
+                FontSize="16"
+                FontAttributes="Bold"
+                BackgroundColor="#B08D57"
+                TextColor="#1A1A1A"
+                CornerRadius="12"
+                MinimumHeightRequest="52" />
+    </Grid>
+
+</ContentPage>
