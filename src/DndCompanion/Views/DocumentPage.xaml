@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.DocumentPage"
+             x:DataType="vm:DocumentViewModel"
+             BackgroundColor="#121212"
+             Title="Storia / Documento">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="14">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding CampaignName}"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="#E8E8E8"
+                       LineBreakMode="TailTruncation"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="{Binding FolderPath}"
+                       FontSize="12"
+                       TextColor="#7A7A7A"
+                       LineBreakMode="TailTruncation"
+                       SemanticProperties.Description="Percorso della campagna" />
+            </VerticalStackLayout>
+
+            <!-- Status message -->
+            <Label Text="{Binding StatusMessage}"
+                   IsVisible="{Binding HasStatusMessage}"
+                   FontSize="14"
+                   TextColor="#9E9E9E"
+                   LineBreakMode="WordWrap" />
+
+            <!-- PDF documents -->
+            <VerticalStackLayout Spacing="10"
+                                 BindableLayout.ItemsSource="{Binding PdfDocuments}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PdfItemViewModel">
+                        <Border BackgroundColor="#1C1C1C"
+                                Stroke="#2E2E2E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="16">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  ColumnSpacing="12">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding FileName}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#E8E8E8"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Text="Documento PDF"
+                                           FontSize="12"
+                                           TextColor="#7A7A7A" />
+                                </VerticalStackLayout>
+                                <Button Grid.Column="1"
+                                        Text="Leggi"
+                                        VerticalOptions="Center"
+                                        Clicked="OnReadPdfClicked"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <!-- Imported document details -->
+            <Border IsVisible="{Binding HasDocument}"
+                    BackgroundColor="#1C1C1C"
+                    Stroke="#2E2E2E"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16">
+                <VerticalStackLayout Spacing="12">
+
+                    <Grid ColumnDefinitions="*,Auto"
+                          ColumnSpacing="10">
+                        <Label Text="{Binding SelectedPdfName}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#E8E8E8"
+                               LineBreakMode="TailTruncation" />
+                        <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                            <Ellipse WidthRequest="10"
+                                     HeightRequest="10"
+                                     Fill="{Binding ImportStatusColor}"
+                                     VerticalOptions="Center" />
+                            <Label Text="{Binding ImportStatusText}"
+                                   FontSize="13"
+                                   TextColor="#9E9E9E"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Grid>
+
+                    <Label Text="{Binding PageCountText}"
+                           FontSize="13"
+                           TextColor="#9E9E9E" />
+
+                    <Label Text="{Binding DocumentStatusDetail}"
+                           IsVisible="{Binding HasDocumentStatusDetail}"
+                           FontSize="13"
+                           TextColor="#FFB74D"
+                           LineBreakMode="WordWrap" />
+
+                    <Border IsVisible="{Binding HasExtractedText}"
+                            BackgroundColor="#161616"
+                            Stroke="#2E2E2E"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12">
+                        <ScrollView MaximumHeightRequest="340">
+                            <Label Text="{Binding ExtractedText}"
+                                   FontSize="14"
+                                   LineHeight="1.25"
+                                   TextColor="#D8D8D8" />
+                        </ScrollView>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#B08D57"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

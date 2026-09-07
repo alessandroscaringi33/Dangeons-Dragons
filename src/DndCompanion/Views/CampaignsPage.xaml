@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.CampaignsPage"
+             x:DataType="vm:CampaignsViewModel"
+             BackgroundColor="#121212"
+             Title="Campagne">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          ColumnDefinitions="*"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="Le tue campagne"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#E8E8E8"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="{Binding CampaignsPath}"
+                   FontSize="12"
+                   TextColor="#7A7A7A"
+                   LineBreakMode="TailTruncation"
+                   SemanticProperties.Description="Percorso della cartella Campagne" />
+        </VerticalStackLayout>
+
+        <!-- Status message -->
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="14"
+               TextColor="#9E9E9E"
+               LineBreakMode="WordWrap" />
+
+        <!-- Campaign list -->
+        <Grid Grid.Row="2">
+            <CollectionView ItemsSource="{Binding Campaigns}"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Default">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="12"
+                                         Padding="0,48"
+                                         VerticalOptions="Center">
+                        <Label Text="Nessuna campagna trovata"
+                               FontSize="18"
+                               TextColor="#9E9E9E"
+                               HorizontalOptions="Center" />
+                        <Label Text="Crea una nuova campagna per iniziare."
+                               FontSize="14"
+                               TextColor="#7A7A7A"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CampaignItemViewModel">
+                        <Border BackgroundColor="#1C1C1C"
+                                Stroke="#2E2E2E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="16"
+                                Margin="0,0,0,10">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto,Auto"
+                                  ColumnSpacing="12"
+                                  RowSpacing="6">
+
+                                <Label Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="{Binding Name}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#E8E8E8"
+                                       LineBreakMode="TailTruncation"
+                                       SemanticProperties.HeadingLevel="Level3" />
+
+                                <Label Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="{Binding PdfText}"
+                                       FontSize="13"
+                                       TextColor="#9E9E9E"
+                                       LineBreakMode="TailTruncation" />
+
+                                <HorizontalStackLayout Grid.Row="2"
+                                                       Grid.Column="0"
+                                                       Spacing="8">
+                                    <Label Text="{Binding LastModifiedText}"
+                                           FontSize="12"
+                                           TextColor="#7A7A7A" />
+                                    <Ellipse WidthRequest="8"
+                                             HeightRequest="8"
+                                             Fill="{Binding StatusColor}"
+                                             VerticalOptions="Center" />
+                                    <Label Text="{Binding StatusText}"
+                                           FontSize="12"
+                                           TextColor="#7A7A7A" />
+                                </HorizontalStackLayout>
+
+                                <Button Grid.Row="0"
+                                        Grid.RowSpan="3"
+                                        Grid.Column="1"
+                                        Text="Apri"
+                                        VerticalOptions="Center"
+                                        Clicked="OnOpenCampaignClicked"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#B08D57"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+        </Grid>
+
+        <!-- New campaign -->
+        <Button Grid.Row="3"
+                Text="Nuova campagna"
+                Clicked="OnNewCampaignClicked"
+                FontSize="16"
+                FontAttributes="Bold"
+                BackgroundColor="#B08D57"
+                TextColor="#1A1A1A"
+                CornerRadius="12"
+                MinimumHeightRequest="52" />
+    </Grid>
+
+</ContentPage>
