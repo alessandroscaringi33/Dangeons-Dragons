@@ -24,6 +24,17 @@ public partial class WorldPage : ContentPage
         set => _viewModel.CampaignName = value;
     }
 
+    private async void OnSessionClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(SessionPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();

@@ -85,7 +85,7 @@ public partial class DocumentPage : ContentPage
     private async void OnSessionClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(
-            nameof(SessionQuickViewPage),
+            nameof(SessionPage),
             new Dictionary<string, object>
             {
                 ["FolderPath"] = _viewModel.FolderPath,

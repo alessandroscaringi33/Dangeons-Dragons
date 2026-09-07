@@ -19,5 +19,6 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(LocationDetailPage), typeof(LocationDetailPage));
 		Routing.RegisterRoute(nameof(QuestDetailPage), typeof(QuestDetailPage));
 		Routing.RegisterRoute(nameof(SkillCheckPage), typeof(SkillCheckPage));
+		Routing.RegisterRoute(nameof(SessionPage), typeof(SessionPage));
 	}
 }

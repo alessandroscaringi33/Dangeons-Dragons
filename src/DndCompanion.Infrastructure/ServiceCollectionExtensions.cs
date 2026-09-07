@@ -5,6 +5,7 @@ using DndCompanion.Core.Documents;
 using DndCompanion.Core.Locations;
 using DndCompanion.Core.Npcs;
 using DndCompanion.Core.Quests;
+using DndCompanion.Core.Sessions;
 using DndCompanion.Core.SkillChecks;
 using DndCompanion.Core.Story;
 using DndCompanion.Infrastructure.Campaigns;
@@ -14,6 +15,7 @@ using DndCompanion.Infrastructure.Documents;
 using DndCompanion.Infrastructure.Locations;
 using DndCompanion.Infrastructure.Npcs;
 using DndCompanion.Infrastructure.Quests;
+using DndCompanion.Infrastructure.Sessions;
 using DndCompanion.Infrastructure.SkillChecks;
 using DndCompanion.Infrastructure.Story;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IQuestService, QuestService>();
         services.AddSingleton<IDiceService, DiceService>();
         services.AddSingleton<ISkillCheckService, SkillCheckService>();
+        services.AddSingleton<ISessionService, SessionService>();
         return services;
     }
 }

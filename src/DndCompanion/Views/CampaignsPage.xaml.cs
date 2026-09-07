@@ -41,7 +41,7 @@ public partial class CampaignsPage : ContentPage
             if (info is not null)
             {
                 await Shell.Current.GoToAsync(
-                    nameof(DocumentPage),
+                    nameof(SessionPage),
                     new Dictionary<string, object>
                     {
                         ["FolderPath"] = info.FolderPath,

@@ -7,6 +7,11 @@
              BackgroundColor="#121212"
              Title="Personaggi">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sessione"
+                     Clicked="OnSessionClicked" />
+    </ContentPage.ToolbarItems>
+
     <Grid RowDefinitions="Auto,Auto,*,Auto"
           ColumnDefinitions="*"
           Padding="16"
