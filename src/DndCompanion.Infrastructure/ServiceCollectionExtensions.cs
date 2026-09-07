@@ -1,5 +1,6 @@
 using DndCompanion.Core.Campaigns;
 using DndCompanion.Core.Characters;
+using DndCompanion.Core.Dice;
 using DndCompanion.Core.Documents;
 using DndCompanion.Core.Locations;
 using DndCompanion.Core.Npcs;
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<INpcService, NpcService>();
         services.AddSingleton<ILocationService, LocationService>();
         services.AddSingleton<IQuestService, QuestService>();
+        services.AddSingleton<IDiceService, DiceService>();
         return services;
     }
 }
