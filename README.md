@@ -16,7 +16,8 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 2 — Gestione campagne | **Completata** |
 | Phase 3 — Importazione PDF | **Completata** |
 | Phase 4 — Storia: capitoli e scene | **Completata** |
-| Phase 5+ | Non avviate |
+| Phase 5 — Personaggi | **Completata** |
+| Phase 6+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
 base MVVM. Il **Domain Model** (`DndCompanion.Core/Domain`) contiene tutte le
@@ -39,7 +40,17 @@ Infrastructure, schermata **Storia** in MAUI, raggiungibile dalla schermata
 "Storia / Documento"). Supporta CRUD di capitoli e scene, riordinamento
 (1-based, riallineato automaticamente), spostamento di una scena anche tra
 capitoli, completamento scena e **scena corrente** (evidenziata visivamente e
-persistita su `Campaign.CurrentSceneId`).
+persistita su `Campaign.CurrentSceneId`). La **gestione personaggi** (Phase 5)
+fornisce una Character Sheet digitale (`ICharacterService` in Core,
+`CharacterService` in Infrastructure, schermate **Personaggi** e **Scheda
+Personaggio** in MAUI, raggiungibili dalla schermata "Storia / Documento").
+Gestisce nome, giocatore, razza, classe, sottoclasse, background, livello,
+esperienza, caratteristiche, HP/HP massimi/HP temporanei, CA, iniziativa,
+velocità, condizioni, note e inventario. I **valori derivati** (modificatori
+delle caratteristiche, proficiency bonus per livello, iniziativa totale,
+percezione passiva) sono **calcolati** in tempo reale e mai duplicati nel
+database. La modifica degli HP è rapida (danno, cura, imposta) sia dall'elenco
+sia dalla scheda.
 
 ---
 
@@ -73,6 +84,7 @@ src/
     Campaigns/             # contratti servizio campagne (Phase 2)
     Documents/             # contratto lettura PDF (Phase 3)
     Story/                 # contratti servizio capitoli/scene (Phase 4)
+    Characters/            # contratti servizio personaggi (Phase 5)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -83,6 +95,8 @@ src/
     Documents/             # PdfPigPdfReader: estrazione testo/n. pagine (Phase 3)
     Story/                 # ChapterService/SceneService: CRUD, ordinamento,
                            # completamento e scena corrente (Phase 4)
+    Characters/            # CharacterService: CRUD personaggi, HP, condizioni,
+                           # inventario e calcoli derivati (Phase 5)
     (Pdf, Repository nelle fasi successive)
   DndCompanion.Tests/
     ViewModelBaseTests.cs
@@ -90,6 +104,7 @@ src/
     ArchitectureTests.cs
     ChapterServiceTests.cs
     SceneServiceTests.cs
+    CharacterServiceTests.cs
 ```
 
 ### Responsabilità dei layer
