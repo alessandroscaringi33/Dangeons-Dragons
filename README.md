@@ -143,10 +143,6 @@ Prerequisiti: .NET SDK 9 + workload MAUI
 
 ## Note sul repository
 
-La cartella `DungeonMaster/` contiene un progetto MAUI di esempio (task
-management) estraneo alla specifica; viene lasciata intatta e non fa parte
-della soluzione `src/DndCompanion.sln`.
-
 La cartella `Campagne/` è la posizione predefinita delle campagne gestite
 dall'app (spec §4); la posizione sarà resa configurabile nelle fasi
 successive.
