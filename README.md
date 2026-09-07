@@ -17,10 +17,10 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 3 — Importazione PDF | **Completata** |
 | Phase 4 — Storia: capitoli e scene | **Completata** |
 | Phase 5 — Personaggi | **Completata** |
-| Phase 6 — NPC e luoghi | **Completata** |
-| Phase 7 — Quest e Mondo | **Completata** |
-| Phase 8 — Dice Engine | **Completata** |
-| Phase 9 — Sessione e Skill Check | **Completata** |
+| Phase 6 — NPC, luoghi e quest | **Completata** |
+| Phase 7 — Dice Engine | **Completata** |
+| Phase 8 — Skill Check e calcoli | **Completata** |
+| Phase 9 — Sessione | **Completata** |
 | Phase 10+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
@@ -62,7 +62,7 @@ Infrastructure, schermate **NPC**, **Scheda NPC** e **Luoghi** in MAUI).
 Eliminare una scena o un luogo scollega automaticamente gli NPC collegati
 (FK `SetNull`). La **visualizzazione rapida di sessione** (`SessionQuickView`)
 mostra la scena corrente e consente al DM di gestire subito HP e stato di NPC
-e personaggi durante il gioco. La **gestione del mondo** (Phase 7) offre una
+e personaggi durante il gioco. La **gestione del mondo** (Phase 6) offre una
 pagina **Mondo** con le sezioni **Luoghi** e **Quest**. Le quest supportano
 gli stati `NotStarted/Active/Completed/Failed/Abandoned` e sono collegabili a
 **capitolo, scena, luogo e NPC** (`IQuestService`/`QuestService` in
@@ -70,14 +70,14 @@ Core/Infrastructure, migrazione EF `AddQuestLinks`); le quest attive sono
 evidenziate visivamente. Ogni elemento (luogo e quest) dispone di lista,
 dettaglio, modifica, ricerca, stato e note. Eliminare un capitolo, una scena,
 un luogo o un NPC scollega automaticamente le quest collegate (FK `SetNull`).
-Il **Dice Engine** (Phase 8) è un motore **completamente indipendente dalla UI**
+Il **Dice Engine** (Phase 7) è un motore **completamente indipendente dalla UI**
 in `DndCompanion.Core/Dice`: `DiceParser` analizza notazioni come `1d20`,
 `1d20+5`, `2d6+3`, `4d8` per i dadi `d4/d6/d8/d10/d12/d20/d100`;
 `DiceRollCalculator` esegue tiri **normal**, **advantage**, **disadvantage** e
 **tiro fisico** — in quest'ultimo caso il valore inserito dal DM (es. 17) è
 usato come risultato reale e non viene mai generato un valore casuale.
 `DiceService` è la facciata registrata in DI. Il totale è sempre derivato dai
-risultati più il modificatore. Il **Skill Check** (Phase 9) registra i tiri
+risultati più il modificatore. Il **Skill Check** (Phase 8) registra i tiri
 nella **sessione attiva** della campagna (creandola se manca). Ogni check
 persiste `personaggio`, `abilità`, `tiro`, `modificatore`, `CD`, `totale`,
 `successo/fallimento`, `tiro fisico` e `timestamp` (`SkillCheck` +
@@ -86,7 +86,15 @@ e, se `IsPhysicalRoll`, il valore inserito dal DM (es. 13) è usato come
 risultato reale. La schermata **Nuovo tiro** (raggiungibile dalla schermata
 campagna) permette di selezionare personaggio, abilità, CD, tipo di dado e
 modificatore, con feedback immediato `SUCCESSO / FALLIMENTO` e lo storico degli
-ultimi tiri.
+ultimi tiri. La **Sessione** (Phase 9) è la schermata principale durante il
+gioco: aprendo una campagna si atterra sul hub di sessione (`SessionService`
+in Core/Infrastructure), che mostra **campagna**, **sessione corrente** (numero,
+timestamp, eventi e note), **scena corrente**, **personaggi** con HP rapidi,
+**quest attive**, **NPC importanti**, **ultimo tiro**, **ultimi eventi** e
+**note rapide**. Gestisce avvio, apertura e chiusura sessione con autosave
+immediato. Una **action bar fissa** tiene sempre accessibili 🎲 Tiro, ⚔
+Combattimento, 🧙 Personaggi, 👹 NPC, 📝 Nota e 📖 Storia, e ogni schermata
+offre il ritorno rapido alla sessione.
 
 ---
 
@@ -123,9 +131,10 @@ src/
     Characters/            # contratti servizio personaggi (Phase 5)
     Npcs/                  # contratti servizio NPC (Phase 6)
     Locations/             # contratti servizio luoghi (Phase 6)
-    Quests/                # contratti servizio quest (Phase 7)
-    Dice/                  # Dice Engine: parser, calcolatore e servizio (Phase 8)
-    SkillChecks/           # contratti servizio skill check (Phase 9)
+    Quests/                # contratti servizio quest (Phase 6)
+    Dice/                  # Dice Engine: parser, calcolatore e servizio (Phase 7)
+    SkillChecks/           # contratti servizio skill check (Phase 8)
+    Sessions/              # contratti servizio sessione (Phase 9)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -142,9 +151,11 @@ src/
                            # scena e luogo (Phase 6)
     Locations/             # LocationService: CRUD luoghi (Phase 6)
     Quests/                # QuestService: CRUD, ricerca, stato e link a
-                           # capitolo/scena/luogo/NPC (Phase 7)
+                           # capitolo/scena/luogo/NPC (Phase 6)
     SkillChecks/           # SkillCheckService: registra tiri nella sessione
-                           # attiva, esito e tiro fisico (Phase 9)
+                           # attiva, esito e tiro fisico (Phase 8)
+    Sessions/              # SessionService: avvio/apertura/chiusura sessione,
+                           # note rapide, timeline e autosave (Phase 9)
     (Pdf, Repository nelle fasi successive)
   DndCompanion.Tests/
     ViewModelBaseTests.cs
@@ -158,6 +169,7 @@ src/
     QuestServiceTests.cs
     DiceEngineTests.cs
     SkillCheckServiceTests.cs
+    SessionServiceTests.cs
 ```
 
 ### Responsabilità dei layer
