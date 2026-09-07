@@ -18,7 +18,8 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 4 — Storia: capitoli e scene | **Completata** |
 | Phase 5 — Personaggi | **Completata** |
 | Phase 6 — NPC e luoghi | **Completata** |
-| Phase 7+ | Non avviate |
+| Phase 7 — Quest e Mondo | **Completata** |
+| Phase 8+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
 base MVVM. Il **Domain Model** (`DndCompanion.Core/Domain`) contiene tutte le
@@ -59,7 +60,14 @@ Infrastructure, schermate **NPC**, **Scheda NPC** e **Luoghi** in MAUI).
 Eliminare una scena o un luogo scollega automaticamente gli NPC collegati
 (FK `SetNull`). La **visualizzazione rapida di sessione** (`SessionQuickView`)
 mostra la scena corrente e consente al DM di gestire subito HP e stato di NPC
-e personaggi durante il gioco.
+e personaggi durante il gioco. La **gestione del mondo** (Phase 7) offre una
+pagina **Mondo** con le sezioni **Luoghi** e **Quest**. Le quest supportano
+gli stati `NotStarted/Active/Completed/Failed/Abandoned` e sono collegabili a
+**capitolo, scena, luogo e NPC** (`IQuestService`/`QuestService` in
+Core/Infrastructure, migrazione EF `AddQuestLinks`); le quest attive sono
+evidenziate visivamente. Ogni elemento (luogo e quest) dispone di lista,
+dettaglio, modifica, ricerca, stato e note. Eliminare un capitolo, una scena,
+un luogo o un NPC scollega automaticamente le quest collegate (FK `SetNull`).
 
 ---
 
@@ -96,6 +104,7 @@ src/
     Characters/            # contratti servizio personaggi (Phase 5)
     Npcs/                  # contratti servizio NPC (Phase 6)
     Locations/             # contratti servizio luoghi (Phase 6)
+    Quests/                # contratti servizio quest (Phase 7)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -111,6 +120,8 @@ src/
     Npcs/                  # NpcService: CRUD, ricerca, HP/vivo-morto, link a
                            # scena e luogo (Phase 6)
     Locations/             # LocationService: CRUD luoghi (Phase 6)
+    Quests/                # QuestService: CRUD, ricerca, stato e link a
+                           # capitolo/scena/luogo/NPC (Phase 7)
     (Pdf, Repository nelle fasi successive)
   DndCompanion.Tests/
     ViewModelBaseTests.cs
@@ -121,6 +132,7 @@ src/
     CharacterServiceTests.cs
     NpcServiceTests.cs
     LocationServiceTests.cs
+    QuestServiceTests.cs
 ```
 
 ### Responsabilità dei layer
