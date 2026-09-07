@@ -36,6 +36,9 @@ x86/
 [Tt]est[Rr]esult*/
 *.trx
 
+# Large copyrighted campaign PDFs (exceed GitHub 100 MB limit)
+Campagne/**/*.pdf
+
 # OS
 Thumbs.db
 Desktop.ini
