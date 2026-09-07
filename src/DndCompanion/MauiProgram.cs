@@ -29,6 +29,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<CampaignsPage>();
         builder.Services.AddTransient<DocumentViewModel>();
         builder.Services.AddTransient<DocumentPage>();
+        builder.Services.AddTransient<StoryViewModel>();
+        builder.Services.AddTransient<StoryPage>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<MainPage>();
 

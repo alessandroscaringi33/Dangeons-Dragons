@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.StoryPage"
+             x:DataType="vm:StoryViewModel"
+             BackgroundColor="#121212"
+             Title="Storia">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          ColumnDefinitions="*"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="{Binding CampaignName}"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#E8E8E8"
+                   LineBreakMode="TailTruncation"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Struttura della storia"
+                   FontSize="13"
+                   TextColor="#7A7A7A"
+                   SemanticProperties.Description="Capitoli e scene della campagna" />
+        </VerticalStackLayout>
+
+        <!-- Status message -->
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="14"
+               TextColor="#9E9E9E"
+               LineBreakMode="WordWrap" />
+
+        <!-- Story tree -->
+        <Grid Grid.Row="2">
+            <ScrollView>
+                <VerticalStackLayout Spacing="14"
+                                     BindableLayout.ItemsSource="{Binding Chapters}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ChapterItemViewModel">
+                            <Border BackgroundColor="#1C1C1C"
+                                    Stroke="#2E2E2E"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="16"
+                                    Margin="0,0,0,2">
+                                <VerticalStackLayout Spacing="12">
+
+                                    <!-- Chapter header -->
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="10"
+                                          RowDefinitions="Auto,Auto"
+                                          RowSpacing="2">
+
+                                        <Label Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="{Binding Order}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="#B08D57"
+                                               VerticalOptions="Start"
+                                               WidthRequest="28" />
+
+                                        <VerticalStackLayout Grid.Row="0"
+                                                             Grid.RowSpan="2"
+                                                             Grid.Column="1"
+                                                             Spacing="2">
+                                            <Label Text="{Binding Title}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#E8E8E8"
+                                                   LineBreakMode="TailTruncation"
+                                                   SemanticProperties.HeadingLevel="Level3" />
+                                            <Label Text="{Binding SceneCountText}"
+                                                   FontSize="12"
+                                                   TextColor="#7A7A7A" />
+                                        </VerticalStackLayout>
+
+                                        <Button Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="2"
+                                                Text="+ Scena"
+                                                FontSize="12"
+                                                Padding="10,4"
+                                                BackgroundColor="#2E2E2E"
+                                                TextColor="#E8E8E8"
+                                                CornerRadius="8"
+                                                VerticalOptions="Center"
+                                                Clicked="OnAddSceneClicked"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+
+                                    <!-- Scenes -->
+                                    <VerticalStackLayout Spacing="8"
+                                                         BindableLayout.ItemsSource="{Binding Scenes}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:SceneItemViewModel">
+                                                <Border BackgroundColor="{Binding BackgroundColor}"
+                                                        Stroke="{Binding StrokeColor}"
+                                                        StrokeThickness="{Binding StrokeThickness}"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="12">
+
+                                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                                          ColumnSpacing="10"
+                                                          RowDefinitions="Auto,Auto"
+                                                          RowSpacing="4">
+
+                                                        <!-- Current scene badge -->
+                                                        <Border Grid.Row="0"
+                                                                Grid.RowSpan="2"
+                                                                Grid.Column="0"
+                                                                IsVisible="{Binding IsCurrent}"
+                                                                BackgroundColor="#B08D57"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 6"
+                                                                Padding="6,2"
+                                                                VerticalOptions="Center">
+                                                            <Label Text="CORRENTE"
+                                                                   FontSize="10"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="#1A1A1A" />
+                                                        </Border>
+
+                                                        <VerticalStackLayout Grid.Row="0"
+                                                                             Grid.RowSpan="2"
+                                                                             Grid.Column="1"
+                                                                             Spacing="2">
+                                                            <Label Text="{Binding Title}"
+                                                                   FontSize="16"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="{Binding TitleColor}"
+                                                                   LineBreakMode="TailTruncation" />
+                                                            <HorizontalStackLayout Spacing="6">
+                                                                <Label Text="{Binding Order, StringFormat='#{0}'}"
+                                                                       FontSize="12"
+                                                                       TextColor="#7A7A7A" />
+                                                                <Label Text="{Binding CompletedText}"
+                                                                       FontSize="12"
+                                                                       TextColor="{Binding CompletedColor}" />
+                                                            </HorizontalStackLayout>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Scene primary actions -->
+                                                        <HorizontalStackLayout Grid.Row="0"
+                                                                               Grid.RowSpan="2"
+                                                                               Grid.Column="2"
+                                                                               Spacing="6">
+                                                            <Button Text="▲"
+                                                                    FontSize="12"
+                                                                    Padding="10,4"
+                                                                    BackgroundColor="#2E2E2E"
+                                                                    TextColor="#E8E8E8"
+                                                                    CornerRadius="8"
+                                                                    IsVisible="{Binding CanMoveUp}"
+                                                                    Clicked="OnMoveSceneUpClicked"
+                                                                    CommandParameter="{Binding .}" />
+                                                            <Button Text="▼"
+                                                                    FontSize="12"
+                                                                    Padding="10,4"
+                                                                    BackgroundColor="#2E2E2E"
+                                                                    TextColor="#E8E8E8"
+                                                                    CornerRadius="8"
+                                                                    Clicked="OnMoveSceneDownClicked"
+                                                                    CommandParameter="{Binding .}" />
+                                                        </HorizontalStackLayout>
+
+                                                        <!-- Scene secondary actions -->
+                                                        <HorizontalStackLayout Grid.Row="1"
+                                                                               Grid.Column="1"
+                                                                               Grid.ColumnSpan="2"
+                                                                               Margin="0,6,0,0"
+                                                                               Spacing="6">
+                                                            <Button Text="Corrente"
+                                                                    FontSize="12"
+                                                                    Padding="10,4"
+                                                                    BackgroundColor="#3A2F22"
+                                                                    TextColor="#B08D57"
+                                                                    CornerRadius="8"
+                                                                    IsVisible="{Binding IsNotCurrent}"
+                                                                    Clicked="OnSetCurrentSceneClicked"
+                                                                    CommandParameter="{Binding .}" />
+                                                            <Button Text="Completa"
+                                                                    FontSize="12"
+                                                                    Padding="10,4"
+                                                                    BackgroundColor="#1E2B22"
+                                                                    TextColor="#4CAF50"
+                                                                    CornerRadius="8"
+                                                                    IsVisible="{Binding IsNotCompleted}"
+                                                                    Clicked="OnCompleteSceneClicked"
+                                                                    CommandParameter="{Binding .}" />
+                                                            <Button Text="Modifica"
+                                                                    FontSize="12"
+                                                                    Padding="10,4"
+                                                                    BackgroundColor="#2E2E2E"
+                                                                    TextColor="#E8E8E8"
+                                                                    CornerRadius="8"
+                                                                    Clicked="OnEditSceneClicked"
+                                                                    CommandParameter="{Binding .}" />
+                                                            <Button Text="Elimina"
+                                                                    FontSize="12"
+                                                                    Padding="10,4"
+                                                                    BackgroundColor="#3A1F1F"
+                                                                    TextColor="#EF5350"
+                                                                    CornerRadius="8"
+                                                                    Clicked="OnDeleteSceneClicked"
+                                                                    CommandParameter="{Binding .}" />
+                                                        </HorizontalStackLayout>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+
+                                    <!-- Chapter actions -->
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Button Text="▲"
+                                                FontSize="12"
+                                                Padding="10,4"
+                                                BackgroundColor="#2E2E2E"
+                                                TextColor="#E8E8E8"
+                                                CornerRadius="8"
+                                                IsVisible="{Binding CanMoveUp}"
+                                                Clicked="OnMoveChapterUpClicked"
+                                                CommandParameter="{Binding .}" />
+                                        <Button Text="▼"
+                                                FontSize="12"
+                                                Padding="10,4"
+                                                BackgroundColor="#2E2E2E"
+                                                TextColor="#E8E8E8"
+                                                CornerRadius="8"
+                                                Clicked="OnMoveChapterDownClicked"
+                                                CommandParameter="{Binding .}" />
+                                        <Button Text="Modifica"
+                                                FontSize="12"
+                                                Padding="10,4"
+                                                BackgroundColor="#2E2E2E"
+                                                TextColor="#E8E8E8"
+                                                CornerRadius="8"
+                                                Clicked="OnEditChapterClicked"
+                                                CommandParameter="{Binding .}" />
+                                        <Button Text="Elimina"
+                                                FontSize="12"
+                                                Padding="10,4"
+                                                BackgroundColor="#3A1F1F"
+                                                TextColor="#EF5350"
+                                                CornerRadius="8"
+                                                Clicked="OnDeleteChapterClicked"
+                                                CommandParameter="{Binding .}" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Empty state -->
+            <VerticalStackLayout IsVisible="{Binding HasNoStory}"
+                                 Spacing="12"
+                                 Padding="0,48"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center">
+                <Label Text="Nessun capitolo ancora"
+                       FontSize="18"
+                       TextColor="#9E9E9E"
+                       HorizontalOptions="Center" />
+                <Label Text="Aggiungi il primo capitolo per iniziare a strutturare la storia."
+                       FontSize="14"
+                       TextColor="#7A7A7A"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#B08D57"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+        </Grid>
+
+        <!-- New chapter -->
+        <Button Grid.Row="3"
+                Text="Nuovo capitolo"
+                Clicked="OnAddChapterClicked"
+                FontSize="16"
+                FontAttributes="Bold"
+                BackgroundColor="#B08D57"
+                TextColor="#1A1A1A"
+                CornerRadius="12"
+                MinimumHeightRequest="52" />
+    </Grid>
+
+</ContentPage>

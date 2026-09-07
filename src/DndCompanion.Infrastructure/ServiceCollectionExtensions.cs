@@ -1,8 +1,10 @@
 using DndCompanion.Core.Campaigns;
 using DndCompanion.Core.Documents;
+using DndCompanion.Core.Story;
 using DndCompanion.Infrastructure.Campaigns;
 using DndCompanion.Infrastructure.Data;
 using DndCompanion.Infrastructure.Documents;
+using DndCompanion.Infrastructure.Story;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DndCompanion.Infrastructure;
@@ -20,6 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICampaignDatabaseInitializer, CampaignDatabaseInitializer>();
         services.AddSingleton<ICampaignService, CampaignService>();
         services.AddSingleton<IPdfReader, PdfPigPdfReader>();
+        services.AddSingleton<IChapterService, ChapterService>();
+        services.AddSingleton<ISceneService, SceneService>();
         return services;
     }
 }

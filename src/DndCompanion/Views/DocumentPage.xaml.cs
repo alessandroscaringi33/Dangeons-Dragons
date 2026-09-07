@@ -37,4 +37,15 @@ public partial class DocumentPage : ContentPage
             await _viewModel.ImportAsync(item);
         }
     }
+
+    private async void OnStoryClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(StoryPage),
+            new Dictionary<string, object>
+            {
+                ["FolderPath"] = _viewModel.FolderPath,
+                ["CampaignName"] = _viewModel.CampaignName
+            });
+    }
 }

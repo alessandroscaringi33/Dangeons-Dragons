@@ -7,6 +7,11 @@
              BackgroundColor="#121212"
              Title="Storia / Documento">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Storia"
+                     Clicked="OnStoryClicked" />
+    </ContentPage.ToolbarItems>
+
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="14">
 
