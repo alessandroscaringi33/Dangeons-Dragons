@@ -15,7 +15,8 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 1 — Database e Domain Model | **Completata** |
 | Phase 2 — Gestione campagne | **Completata** |
 | Phase 3 — Importazione PDF | **Completata** |
-| Phase 4+ | Non avviate |
+| Phase 4 — Storia: capitoli e scene | **Completata** |
+| Phase 5+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
 base MVVM. Il **Domain Model** (`DndCompanion.Core/Domain`) contiene tutte le
@@ -31,8 +32,14 @@ gestire la posizione configurabile della cartella `Campagne`. L'**importazione
 PDF** (`IPdfReader` in Core, `PdfPigPdfReader` in Infrastructure, schermata
 "Storia / Documento" in MAUI) estrae il testo e il numero di pagine senza
 modificare il PDF originale e distingue chiaramente i documenti senza testo
-estraibile (es. scansionati). Non sono ancora implementati capitoli/scene
-(Phase 4).
+estraibile (es. scansionati). La **gestione della storia** (Phase 4) consente al
+DM di strutturare manualmente la campagna in **Capitolo → Scena**
+(`IChapterService`/`ISceneService` in Core, `ChapterService`/`SceneService` in
+Infrastructure, schermata **Storia** in MAUI, raggiungibile dalla schermata
+"Storia / Documento"). Supporta CRUD di capitoli e scene, riordinamento
+(1-based, riallineato automaticamente), spostamento di una scena anche tra
+capitoli, completamento scena e **scena corrente** (evidenziata visivamente e
+persistita su `Campaign.CurrentSceneId`).
 
 ---
 
@@ -63,6 +70,9 @@ src/
   DndCompanion.Core/
     Mvvm/                  # base MVVM indipendente dalla UI
     Domain/                # entità, enum e regole di dominio (Phase 1)
+    Campaigns/             # contratti servizio campagne (Phase 2)
+    Documents/             # contratto lettura PDF (Phase 3)
+    Story/                 # contratti servizio capitoli/scene (Phase 4)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -71,11 +81,15 @@ src/
     Campaigns/             # CampaignService: elenco, creazione, apertura campagne
                            # e rilevamento PDF (Phase 2)
     Documents/             # PdfPigPdfReader: estrazione testo/n. pagine (Phase 3)
+    Story/                 # ChapterService/SceneService: CRUD, ordinamento,
+                           # completamento e scena corrente (Phase 4)
     (Pdf, Repository nelle fasi successive)
   DndCompanion.Tests/
     ViewModelBaseTests.cs
     FileLoggerTests.cs
     ArchitectureTests.cs
+    ChapterServiceTests.cs
+    SceneServiceTests.cs
 ```
 
 ### Responsabilità dei layer
