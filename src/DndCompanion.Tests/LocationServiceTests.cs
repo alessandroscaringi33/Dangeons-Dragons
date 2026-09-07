@@ -150,4 +150,63 @@ public sealed class LocationServiceTests
         Assert.Equal("Sotterranei", stored.Name);
         Assert.Equal("Buio e pericolosi", stored.Description);
     }
+
+    [Fact]
+    public async Task Create_WithNotes_PersistsNotes()
+    {
+        var folder = await CreateCampaignFolderAsync();
+        var service = CreateService();
+
+        var created = await service.CreateLocationAsync(folder, "Piazza", "", "Nota del luogo");
+
+        Assert.Equal("Nota del luogo", created.Notes);
+    }
+
+    [Fact]
+    public async Task Update_WithNotes_ChangesNotes()
+    {
+        var folder = await CreateCampaignFolderAsync();
+        var service = CreateService();
+        var created = await service.CreateLocationAsync(folder, "Piazza", "", "");
+
+        var updated = await service.UpdateLocationAsync(folder, created.Id, "Piazza", "", "Nuova nota");
+
+        Assert.Equal("Nuova nota", updated.Notes);
+    }
+
+    [Fact]
+    public async Task Get_ReturnsLocation()
+    {
+        var folder = await CreateCampaignFolderAsync();
+        var service = CreateService();
+        var created = await service.CreateLocationAsync(folder, "Foresta", "Verde");
+
+        var loaded = await service.GetLocationAsync(folder, created.Id);
+
+        Assert.Equal(created.Id, loaded.Id);
+        Assert.Equal("Foresta", loaded.Name);
+    }
+
+    [Fact]
+    public async Task Get_MissingLocation_Throws()
+    {
+        var folder = await CreateCampaignFolderAsync();
+        var service = CreateService();
+
+        await Assert.ThrowsAsync<LocationException>(
+            () => service.GetLocationAsync(folder, Guid.NewGuid()));
+    }
+
+    [Fact]
+    public async Task Search_FiltersByNotes()
+    {
+        var folder = await CreateCampaignFolderAsync();
+        var service = CreateService();
+        await service.CreateLocationAsync(folder, "Taverna", "", "Frequenza: notturna");
+        await service.CreateLocationAsync(folder, "Castello", "", "");
+
+        var matches = await service.ListLocationsAsync(folder, "notturna");
+
+        Assert.Equal("Taverna", Assert.Single(matches).Name);
+    }
 }

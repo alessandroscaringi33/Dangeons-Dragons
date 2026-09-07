@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.QuestDetailPage"
+             x:DataType="vm:QuestDetailViewModel"
+             BackgroundColor="#121212"
+             Title="Dettaglio Quest">
+
+    <Grid RowDefinitions="Auto,*"
+          RowSpacing="8">
+
+        <Grid Grid.Row="0"
+              Padding="16,12,16,0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="{Binding Title}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#E8E8E8"
+                       LineBreakMode="TailTruncation"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="{Binding CampaignName}"
+                       FontSize="12"
+                       TextColor="#7A7A7A" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="Salva"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    Padding="16,8"
+                    BackgroundColor="#B08D57"
+                    TextColor="#1A1A1A"
+                    CornerRadius="10"
+                    VerticalOptions="Center"
+                    Clicked="OnSaveClicked" />
+        </Grid>
+
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="13"
+               TextColor="#9E9E9E"
+               Padding="16,0,16,4"
+               LineBreakMode="WordWrap" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Details -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Dettagli"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Titolo" FontSize="11" TextColor="#7A7A7A" />
+                            <Entry Text="{Binding Title}" Placeholder="Titolo" BackgroundColor="#161616" TextColor="#E8E8E8" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Descrizione" FontSize="11" TextColor="#7A7A7A" />
+                            <Editor Text="{Binding Description}"
+                                    Placeholder="Descrizione della quest..."
+                                    BackgroundColor="#161616"
+                                    TextColor="#D8D8D8"
+                                    HeightRequest="110" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Stato" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona stato"
+                                    ItemsSource="{Binding Statuses}"
+                                    SelectedItem="{Binding SelectedStatus}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Note" FontSize="11" TextColor="#7A7A7A" />
+                            <Editor Text="{Binding Notes}"
+                                    Placeholder="Note sulla quest..."
+                                    BackgroundColor="#161616"
+                                    TextColor="#D8D8D8"
+                                    HeightRequest="120" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Links -->
+                <Border BackgroundColor="#1C1C1C"
+                        Stroke="#2E2E2E"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Collegamenti"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57" />
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Capitolo" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona capitolo"
+                                    ItemsSource="{Binding Chapters}"
+                                    SelectedItem="{Binding SelectedChapter}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Scena" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona scena"
+                                    ItemsSource="{Binding Scenes}"
+                                    SelectedItem="{Binding SelectedScene}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Luogo" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona luogo"
+                                    ItemsSource="{Binding Locations}"
+                                    SelectedItem="{Binding SelectedLocation}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="NPC" FontSize="11" TextColor="#7A7A7A" />
+                            <Picker Title="Seleziona NPC"
+                                    ItemsSource="{Binding Npcs}"
+                                    SelectedItem="{Binding SelectedNpc}"
+                                    TextColor="#E8E8E8"
+                                    TitleColor="#5A5A5A"
+                                    BackgroundColor="#161616" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Save -->
+                <Button Text="Salva quest"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#B08D57"
+                        TextColor="#1A1A1A"
+                        CornerRadius="12"
+                        MinimumHeightRequest="52"
+                        Clicked="OnSaveClicked" />
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#B08D57"
+                                   Margin="0,12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

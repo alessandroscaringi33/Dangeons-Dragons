@@ -25,5 +25,33 @@ public sealed class QuestConfiguration : IEntityTypeConfiguration<Quest>
         builder.HasIndex(q => q.CampaignId);
 
         builder.HasIndex(q => new { q.CampaignId, q.Status });
+
+        builder.HasIndex(q => q.ChapterId);
+
+        builder.HasIndex(q => q.SceneId);
+
+        builder.HasIndex(q => q.LocationId);
+
+        builder.HasIndex(q => q.NpcId);
+
+        builder.HasOne(q => q.Chapter)
+            .WithMany()
+            .HasForeignKey(q => q.ChapterId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(q => q.Scene)
+            .WithMany()
+            .HasForeignKey(q => q.SceneId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(q => q.Location)
+            .WithMany()
+            .HasForeignKey(q => q.LocationId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(q => q.Npc)
+            .WithMany()
+            .HasForeignKey(q => q.NpcId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

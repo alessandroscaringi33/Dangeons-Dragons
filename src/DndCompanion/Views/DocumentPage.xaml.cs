@@ -71,10 +71,10 @@ public partial class DocumentPage : ContentPage
             });
     }
 
-    private async void OnLocationsClicked(object? sender, EventArgs e)
+    private async void OnWorldClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(
-            nameof(LocationsPage),
+            nameof(WorldPage),
             new Dictionary<string, object>
             {
                 ["FolderPath"] = _viewModel.FolderPath,

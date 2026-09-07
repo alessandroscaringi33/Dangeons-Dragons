@@ -13,12 +13,20 @@ public interface ILocationService
         string? searchTerm = null,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Gets a single location by id.</summary>
+    /// <exception cref="LocationException">When the location does not exist.</exception>
+    Task<LocationInfo> GetLocationAsync(
+        string campaignFolderPath,
+        Guid locationId,
+        CancellationToken cancellationToken = default);
+
     /// <summary>Creates a new location in the campaign.</summary>
     /// <exception cref="LocationException">When creation fails.</exception>
     Task<LocationInfo> CreateLocationAsync(
         string campaignFolderPath,
         string name,
         string description,
+        string notes = "",
         CancellationToken cancellationToken = default);
 
     /// <summary>Updates the profile of an existing location.</summary>
@@ -28,6 +36,7 @@ public interface ILocationService
         Guid locationId,
         string name,
         string description,
+        string notes = "",
         CancellationToken cancellationToken = default);
 
     /// <summary>Deletes a location. NPCs linked to it are unlinked.</summary>

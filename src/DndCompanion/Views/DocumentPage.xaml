@@ -14,8 +14,8 @@
                      Clicked="OnCharactersClicked" />
         <ToolbarItem Text="NPC"
                      Clicked="OnNpcsClicked" />
-        <ToolbarItem Text="Luoghi"
-                     Clicked="OnLocationsClicked" />
+        <ToolbarItem Text="Mondo"
+                     Clicked="OnWorldClicked" />
         <ToolbarItem Text="Sessione"
                      Clicked="OnSessionClicked" />
     </ContentPage.ToolbarItems>

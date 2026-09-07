@@ -8,7 +8,7 @@ namespace DndCompanion.Infrastructure.Locations;
 
 /// <summary>
 /// Manages the locations of a campaign using the campaign's SQLite database.
-/// Deleting a location unlinks any NPC linked to it (SetNull FK).
+/// Deleting a location unlinks any NPC or quest linked to it (SetNull FK).
 /// </summary>
 public sealed class LocationService : ILocationService
 {
@@ -38,7 +38,8 @@ public sealed class LocationService : ILocationService
             var lowered = term.ToLowerInvariant();
             query = query.Where(l =>
                 l.Name.ToLower().Contains(lowered) ||
-                l.Description.ToLower().Contains(lowered));
+                l.Description.ToLower().Contains(lowered) ||
+                l.Notes.ToLower().Contains(lowered));
         }
 
         var locations = await query
@@ -46,13 +47,43 @@ public sealed class LocationService : ILocationService
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return locations.Select(ToInfo).ToList();
+        var questCounts = await context.Quests
+            .Where(q => q.LocationId != null)
+            .GroupBy(q => q.LocationId!.Value)
+            .Select(g => new { LocationId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.LocationId, x => x.Count, cancellationToken)
+            .ConfigureAwait(false);
+
+        return locations
+            .Select(l => ToInfo(l, questCounts.GetValueOrDefault(l.Id)))
+            .ToList();
+    }
+
+    public async Task<LocationInfo> GetLocationAsync(
+        string campaignFolderPath,
+        Guid locationId,
+        CancellationToken cancellationToken = default)
+    {
+        await using var context = _databaseFactory.CreateContext(campaignFolderPath);
+
+        var location = await context.Locations
+            .AsNoTracking()
+            .FirstOrDefaultAsync(l => l.Id == locationId, cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new LocationException("Il luogo non è stato trovato.");
+
+        var questCount = await context.Quests
+            .CountAsync(q => q.LocationId == locationId, cancellationToken)
+            .ConfigureAwait(false);
+
+        return ToInfo(location, questCount);
     }
 
     public async Task<LocationInfo> CreateLocationAsync(
         string campaignFolderPath,
         string name,
         string description,
+        string notes = "",
         CancellationToken cancellationToken = default)
     {
         var normalizedName = ValidateName(name);
@@ -68,14 +99,15 @@ public sealed class LocationService : ILocationService
         {
             CampaignId = campaign.Id,
             Name = normalizedName,
-            Description = description ?? string.Empty
+            Description = description ?? string.Empty,
+            Notes = notes ?? string.Empty
         };
 
         context.Locations.Add(location);
         await SaveAsync(context, cancellationToken).ConfigureAwait(false);
 
         _logger.LogInformation("Created location '{Name}' in campaign {Folder}", location.Name, campaignFolderPath);
-        return ToInfo(location);
+        return ToInfo(location, 0);
     }
 
     public async Task<LocationInfo> UpdateLocationAsync(
@@ -83,6 +115,7 @@ public sealed class LocationService : ILocationService
         Guid locationId,
         string name,
         string description,
+        string notes = "",
         CancellationToken cancellationToken = default)
     {
         var normalizedName = ValidateName(name);
@@ -96,11 +129,12 @@ public sealed class LocationService : ILocationService
 
         location.Name = normalizedName;
         location.Description = description ?? string.Empty;
+        location.Notes = notes ?? string.Empty;
 
         await SaveAsync(context, cancellationToken).ConfigureAwait(false);
 
         _logger.LogInformation("Updated location '{Name}' in campaign {Folder}", location.Name, campaignFolderPath);
-        return ToInfo(location);
+        return ToInfo(location, 0);
     }
 
     public async Task DeleteLocationAsync(
@@ -143,7 +177,7 @@ public sealed class LocationService : ILocationService
         }
     }
 
-    private static LocationInfo ToInfo(Location l)
+    private static LocationInfo ToInfo(Location l, int questCount)
     {
         return new LocationInfo
         {
@@ -151,7 +185,8 @@ public sealed class LocationService : ILocationService
             CampaignId = l.CampaignId,
             Name = l.Name,
             Description = l.Description,
-            Notes = l.Notes
+            Notes = l.Notes,
+            QuestCount = questCount
         };
     }
 }

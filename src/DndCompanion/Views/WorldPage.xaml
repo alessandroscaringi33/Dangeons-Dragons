@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DndCompanion.ViewModels"
+             x:Class="DndCompanion.Views.WorldPage"
+             x:DataType="vm:WorldViewModel"
+             BackgroundColor="#121212"
+             Title="Mondo">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="8">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="16,12,16,0" Spacing="2">
+            <Label Text="{Binding CampaignName}"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#E8E8E8"
+                   LineBreakMode="TailTruncation"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="Mondo della campagna"
+                   FontSize="13"
+                   TextColor="#7A7A7A"
+                   SemanticProperties.Description="Luoghi e quest della campagna" />
+        </VerticalStackLayout>
+
+        <!-- Status -->
+        <Label Grid.Row="1"
+               Text="{Binding StatusMessage}"
+               IsVisible="{Binding HasStatusMessage}"
+               FontSize="13"
+               TextColor="#9E9E9E"
+               Padding="16,4,16,0"
+               LineBreakMode="WordWrap" />
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="16" Spacing="18">
+
+                <!-- ============ LUOGHI ============ -->
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Label Text="Luoghi"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57"
+                               VerticalOptions="Center" />
+                        <Button Grid.Column="1"
+                                Text="Nuovo luogo"
+                                FontSize="13"
+                                Padding="12,6"
+                                BackgroundColor="#2E2E2E"
+                                TextColor="#E8E8E8"
+                                CornerRadius="8"
+                                Clicked="OnNewLocationClicked" />
+                    </Grid>
+
+                    <!-- Search -->
+                    <Border BackgroundColor="#1C1C1C"
+                            Stroke="#2E2E2E"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="8,2">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Entry Grid.Column="0"
+                                   x:Name="LocationSearchEntry"
+                                   Text="{Binding LocationSearchText}"
+                                   Placeholder="Cerca luoghi..."
+                                   BackgroundColor="Transparent"
+                                   TextColor="#E8E8E8"
+                                   PlaceholderColor="#5A5A5A"
+                                   VerticalOptions="Center"
+                                   ReturnType="Search" />
+                            <Button Grid.Column="1"
+                                    Text="Cerca"
+                                    FontSize="12"
+                                    Padding="10,4"
+                                    BackgroundColor="#2E2E2E"
+                                    TextColor="#E8E8E8"
+                                    CornerRadius="8"
+                                    Clicked="OnSearchLocationsClicked" />
+                        </Grid>
+                    </Border>
+
+                    <VerticalStackLayout Spacing="8"
+                                         BindableLayout.ItemsSource="{Binding Locations}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:LocationItemViewModel">
+                                <Border BackgroundColor="#1C1C1C"
+                                        Stroke="#2E2E2E"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="14">
+                                    <Grid ColumnDefinitions="*,Auto,Auto"
+                                          ColumnSpacing="8"
+                                          RowDefinitions="Auto,Auto"
+                                          RowSpacing="2">
+                                        <Label Grid.Row="0"
+                                               Text="{Binding Name}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="#E8E8E8"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Grid.Row="1"
+                                               Text="{Binding Description}"
+                                               FontSize="12"
+                                               TextColor="#7A7A7A"
+                                               LineBreakMode="TailTruncation"
+                                               IsVisible="{Binding HasDescription}" />
+                                        <Button Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="1"
+                                                Text="Apri"
+                                                FontSize="12"
+                                                Padding="10,6"
+                                                BackgroundColor="#B08D57"
+                                                TextColor="#1A1A1A"
+                                                CornerRadius="8"
+                                                Clicked="OnOpenLocationClicked"
+                                                CommandParameter="{Binding .}" />
+                                        <Button Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="2"
+                                                Text="✕"
+                                                FontSize="12"
+                                                Padding="10,6"
+                                                BackgroundColor="#3A1F1F"
+                                                TextColor="#EF5350"
+                                                CornerRadius="8"
+                                                Clicked="OnDeleteLocationClicked"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Label Text="Nessun luogo trovato"
+                           IsVisible="{Binding HasNoLocations}"
+                           FontSize="13"
+                           TextColor="#7A7A7A" />
+                </VerticalStackLayout>
+
+                <!-- ============ QUEST ============ -->
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Label Text="Quest"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#B08D57"
+                               VerticalOptions="Center" />
+                        <Button Grid.Column="1"
+                                Text="Nuova quest"
+                                FontSize="13"
+                                Padding="12,6"
+                                BackgroundColor="#2E2E2E"
+                                TextColor="#E8E8E8"
+                                CornerRadius="8"
+                                Clicked="OnNewQuestClicked" />
+                    </Grid>
+
+                    <!-- Search -->
+                    <Border BackgroundColor="#1C1C1C"
+                            Stroke="#2E2E2E"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="8,2">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Entry Grid.Column="0"
+                                   x:Name="QuestSearchEntry"
+                                   Text="{Binding QuestSearchText}"
+                                   Placeholder="Cerca quest..."
+                                   BackgroundColor="Transparent"
+                                   TextColor="#E8E8E8"
+                                   PlaceholderColor="#5A5A5A"
+                                   VerticalOptions="Center"
+                                   ReturnType="Search" />
+                            <Button Grid.Column="1"
+                                    Text="Cerca"
+                                    FontSize="12"
+                                    Padding="10,4"
+                                    BackgroundColor="#2E2E2E"
+                                    TextColor="#E8E8E8"
+                                    CornerRadius="8"
+                                    Clicked="OnSearchQuestsClicked" />
+                        </Grid>
+                    </Border>
+
+                    <VerticalStackLayout Spacing="8"
+                                         BindableLayout.ItemsSource="{Binding Quests}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:QuestItemViewModel">
+                                <Border BackgroundColor="{Binding BackgroundColor}"
+                                        Stroke="{Binding StrokeColor}"
+                                        StrokeThickness="{Binding StrokeThickness}"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="14">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding Title}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#E8E8E8"
+                                                       LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding LinkText}"
+                                                       FontSize="12"
+                                                       TextColor="#7A7A7A"
+                                                       LineBreakMode="TailTruncation" />
+                                            </VerticalStackLayout>
+                                            <Border Grid.Column="1"
+                                                    BackgroundColor="{Binding StatusColor}"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 6"
+                                                    Padding="8,3"
+                                                    VerticalOptions="Center">
+                                                <Label Text="{Binding StatusText}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#1A1A1A" />
+                                            </Border>
+                                        </Grid>
+
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto"
+                                              ColumnSpacing="6">
+                                            <Button Grid.Column="0"
+                                                    Text="Apri"
+                                                    FontSize="12"
+                                                    Padding="10,5"
+                                                    BackgroundColor="#B08D57"
+                                                    TextColor="#1A1A1A"
+                                                    CornerRadius="8"
+                                                    Clicked="OnOpenQuestClicked"
+                                                    CommandParameter="{Binding .}" />
+                                            <Button Grid.Column="1"
+                                                    Text="Stato"
+                                                    FontSize="12"
+                                                    Padding="10,5"
+                                                    BackgroundColor="#3A2F22"
+                                                    TextColor="#B08D57"
+                                                    CornerRadius="8"
+                                                    Clicked="OnQuestStatusClicked"
+                                                    CommandParameter="{Binding .}" />
+                                            <Button Grid.Column="3"
+                                                    Text="Modifica"
+                                                    FontSize="12"
+                                                    Padding="10,5"
+                                                    BackgroundColor="#2E2E2E"
+                                                    TextColor="#E8E8E8"
+                                                    CornerRadius="8"
+                                                    Clicked="OnEditQuestClicked"
+                                                    CommandParameter="{Binding .}" />
+                                            <Button Grid.Column="4"
+                                                    Text="✕"
+                                                    FontSize="12"
+                                                    Padding="10,5"
+                                                    BackgroundColor="#3A1F1F"
+                                                    TextColor="#EF5350"
+                                                    CornerRadius="8"
+                                                    Clicked="OnDeleteQuestClicked"
+                                                    CommandParameter="{Binding .}" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Label Text="Nessuna quest trovata"
+                           IsVisible="{Binding HasNoQuests}"
+                           FontSize="13"
+                           TextColor="#7A7A7A" />
+                </VerticalStackLayout>
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#B08D57"
+                                   Margin="0,12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
