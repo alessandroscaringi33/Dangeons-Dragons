@@ -17,7 +17,8 @@ Specifica tecnica di riferimento: [`DnD_Companion_Specifica_Tecnica.md`](./DnD_C
 | Phase 3 — Importazione PDF | **Completata** |
 | Phase 4 — Storia: capitoli e scene | **Completata** |
 | Phase 5 — Personaggi | **Completata** |
-| Phase 6+ | Non avviate |
+| Phase 6 — NPC e luoghi | **Completata** |
+| Phase 7+ | Non avviate |
 
 È stata costruita la **base architetturale**: solution, progetti, DI, logging,
 base MVVM. Il **Domain Model** (`DndCompanion.Core/Domain`) contiene tutte le
@@ -50,7 +51,15 @@ velocità, condizioni, note e inventario. I **valori derivati** (modificatori
 delle caratteristiche, proficiency bonus per livello, iniziativa totale,
 percezione passiva) sono **calcolati** in tempo reale e mai duplicati nel
 database. La modifica degli HP è rapida (danno, cura, imposta) sia dall'elenco
-sia dalla scheda.
+sia dalla scheda. La **gestione NPC** (Phase 6) offre CRUD, ricerca
+(case-insensitive per nome/ruolo/descrizione), HP/CA/iniziativa, stato
+vivo/morto e collegamento di ogni NPC a una **scena** e a un **luogo**
+(`INpcService`/`ILocationService` in Core, `NpcService`/`LocationService` in
+Infrastructure, schermate **NPC**, **Scheda NPC** e **Luoghi** in MAUI).
+Eliminare una scena o un luogo scollega automaticamente gli NPC collegati
+(FK `SetNull`). La **visualizzazione rapida di sessione** (`SessionQuickView`)
+mostra la scena corrente e consente al DM di gestire subito HP e stato di NPC
+e personaggi durante il gioco.
 
 ---
 
@@ -85,6 +94,8 @@ src/
     Documents/             # contratto lettura PDF (Phase 3)
     Story/                 # contratti servizio capitoli/scene (Phase 4)
     Characters/            # contratti servizio personaggi (Phase 5)
+    Npcs/                  # contratti servizio NPC (Phase 6)
+    Locations/             # contratti servizio luoghi (Phase 6)
     (Abstractions, Services nelle fasi successive)
   DndCompanion.Infrastructure/
     Logging/               # logging strutturato su file (spec §20)
@@ -97,6 +108,9 @@ src/
                            # completamento e scena corrente (Phase 4)
     Characters/            # CharacterService: CRUD personaggi, HP, condizioni,
                            # inventario e calcoli derivati (Phase 5)
+    Npcs/                  # NpcService: CRUD, ricerca, HP/vivo-morto, link a
+                           # scena e luogo (Phase 6)
+    Locations/             # LocationService: CRUD luoghi (Phase 6)
     (Pdf, Repository nelle fasi successive)
   DndCompanion.Tests/
     ViewModelBaseTests.cs
@@ -105,6 +119,8 @@ src/
     ChapterServiceTests.cs
     SceneServiceTests.cs
     CharacterServiceTests.cs
+    NpcServiceTests.cs
+    LocationServiceTests.cs
 ```
 
 ### Responsabilità dei layer
